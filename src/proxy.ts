@@ -16,10 +16,10 @@ const AUTH_PAGES = ["/login", "/register"];
  * Lightweight, edge-safe check: we only look for the presence of a
  * session cookie here (no DB call), then let each protected page's
  * Server Component re-verify via getServerSession() for the real,
- * authoritative check. This keeps middleware fast while avoiding any
+ * authoritative check. This keeps the proxy fast while avoiding any
  * reliance on client-supplied state for actual authorization.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = getSessionCookie(request);
 
