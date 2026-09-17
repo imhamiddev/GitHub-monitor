@@ -110,6 +110,21 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   At least 10 characters.
                 </p>
               </div>
+              <div className="grid gap-3">
+                <Label htmlFor="confirmPassword">Confirm password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  aria-invalid={!!errors.confirmPassword}
+                  {...register("confirmPassword")}
+                />
+                {errors.confirmPassword && (
+                  <p className="text-destructive text-sm">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting && <Loader2Icon className="animate-spin" />}
                 Create account
