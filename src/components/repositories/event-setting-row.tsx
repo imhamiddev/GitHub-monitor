@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { updateEventCategorySetting } from "@/lib/github/repo-actions";
 import type { EventCategory } from "@/lib/github/events";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Switch } from "@/components/ui/switch";
 
 export function EventSettingRow({
@@ -19,10 +20,13 @@ export function EventSettingRow({
   initialEnabled: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleChange(checked: boolean) {
     startTransition(async () => {
-      const result = await updateEventCategorySetting(repositoryId, category, checked);
+      const result = await runWithBar(() =>
+        updateEventCategorySetting(repositoryId, category, checked)
+      );
       if (!result.success) {
         toast.error(result.error);
       }
