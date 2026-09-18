@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import type { RepoListItem } from "@/lib/github/repo-sync";
 import { toggleRepositoryMonitoring } from "@/lib/github/repo-actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -14,10 +15,13 @@ import { Switch } from "@/components/ui/switch";
 
 export function RepositoryCard({ repo }: { repo: RepoListItem }) {
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleToggle(checked: boolean) {
     startTransition(async () => {
-      const result = await toggleRepositoryMonitoring(repo.githubRepoId, checked);
+      const result = await runWithBar(() =>
+        toggleRepositoryMonitoring(repo.githubRepoId, checked)
+      );
       if (!result.success) {
         toast.error(result.error);
         return;
