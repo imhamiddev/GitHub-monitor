@@ -57,7 +57,7 @@ export function ChangePasswordCard() {
 
   return (
     <Card>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
         <CardHeader>
           <CardTitle className="text-base">Change password</CardTitle>
           <CardDescription>
