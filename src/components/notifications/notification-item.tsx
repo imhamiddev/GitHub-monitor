@@ -21,6 +21,13 @@ function renderSummaryLine(item: NotificationListItem): string {
       return `@${item.actorLogin} starred ${item.repositoryName}`;
     case "fork":
       return `@${item.actorLogin} forked ${item.repositoryName}`;
+    case "follower": {
+      const before = typeof s.followersBefore === "number" ? s.followersBefore : null;
+      const after = typeof s.followersAfter === "number" ? s.followersAfter : null;
+      return before !== null && after !== null
+        ? `@${item.actorLogin} — Followers ${before} → ${after}`
+        : `@${item.actorLogin}`;
+    }
     case "pull_request":
       return typeof s.title === "string" ? `#${s.number} ${s.title}` : "Pull request";
     case "issues":
