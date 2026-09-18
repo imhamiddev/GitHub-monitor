@@ -10,6 +10,7 @@ import {
   isEventCategoryEnabled,
 } from "@/lib/github/repositories";
 import { markInstallationRevoked } from "@/lib/github/installations";
+import { getNotificationsEnabled } from "@/lib/notifications/settings";
 import { verifyGithubWebhookSignature } from "@/lib/security/webhook";
 
 export const runtime = "nodejs";
@@ -130,11 +131,14 @@ export async function POST(request: NextRequest) {
   });
 
   if (installation) {
-    await db.insert(notification).values({
-      id: randomUUID(),
-      userId: installation.userId,
-      eventId,
-    });
+    const notificationsEnabled = await getNotificationsEnabled(installation.userId);
+    if (notificationsEnabled) {
+      await db.insert(notification).values({
+        id: randomUUID(),
+        userId: installation.userId,
+        eventId,
+      });
+    }
   }
 
   await recordDelivery(deliveryId, eventType);
