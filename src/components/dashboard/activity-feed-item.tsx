@@ -18,6 +18,13 @@ function renderSummaryLine(item: RecentActivityItem): string {
       return `@${item.actorLogin} starred the repo`;
     case "fork":
       return `@${item.actorLogin} forked the repo`;
+    case "follower": {
+      const before = typeof s.followersBefore === "number" ? s.followersBefore : null;
+      const after = typeof s.followersAfter === "number" ? s.followersAfter : null;
+      return before !== null && after !== null
+        ? `@${item.actorLogin} — Followers ${before} → ${after}`
+        : `@${item.actorLogin}`;
+    }
     case "pull_request":
       return typeof s.title === "string" ? `#${s.number} ${s.title}` : "Pull request";
     case "issues":
