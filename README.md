@@ -1,5 +1,11 @@
 <div align="center">
 
+[🇮🇷 فارسی](./README.fa.md) | 🇬🇧 English
+
+</div>
+
+<div align="center">
+
 # 📡 GitHub Monitor
 
 **Track every heartbeat of your GitHub repositories — in one clean dashboard.**
