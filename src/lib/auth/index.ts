@@ -45,9 +45,15 @@ export const auth = betterAuth({
     },
   },
 
-  // Built-in brute-force / rate limiting protection for auth endpoints.
+  // Persisted to the database (not in-memory): on Vercel's serverless
+  // platform, each invocation can land on a different instance with
+  // its own memory, so in-memory rate limiting would not actually
+  // limit anything across requests. The rateLimit table in our schema
+  // exists specifically for this.
   rateLimit: {
     enabled: true,
+    storage: "database",
+    modelName: "rateLimit",
     window: 60, // seconds
     max: 10, // requests per window per IP+route
     customRules: {
