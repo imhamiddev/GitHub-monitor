@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { SearchIcon, SearchXIcon } from "lucide-react";
+import { useMemo, useState, useTransition } from "react";
+import { CheckCheckIcon, Loader2Icon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import type { RepoListItem } from "@/lib/github/repo-sync";
+import { bulkSetRepositoryMonitoring } from "@/lib/github/repo-actions";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -22,6 +25,7 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
   const [query, setQuery] = useState("");
   const [monitorFilter, setMonitorFilter] = useState<MonitorFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [isPending, startTransition] = useTransition();
 
   const filtered = useMemo(() => {
     let result = repos;
@@ -47,6 +51,30 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
       return a.name.localeCompare(b.name);
     });
   }, [repos, query, monitorFilter, sortKey]);
+
+  const unmonitoredInView = filtered.filter((r) => !r.isMonitored);
+  const monitoredInView = filtered.filter((r) => r.isMonitored);
+
+  function handleBulkToggle(monitored: boolean) {
+    const targets = monitored ? unmonitoredInView : monitoredInView;
+    if (targets.length === 0) return;
+
+    startTransition(async () => {
+      const result = await bulkSetRepositoryMonitoring(
+        targets.map((r) => r.githubRepoId),
+        monitored
+      );
+      if (result.success) {
+        toast.success(
+          monitored
+            ? `Now monitoring ${targets.length} ${targets.length === 1 ? "repository" : "repositories"}`
+            : `Stopped monitoring ${targets.length} ${targets.length === 1 ? "repository" : "repositories"}`
+        );
+      } else {
+        toast.error(result.error);
+      }
+    });
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -84,6 +112,33 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
           </SelectContent>
         </Select>
       </div>
+
+      {filtered.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isPending || unmonitoredInView.length === 0}
+            onClick={() => handleBulkToggle(true)}
+          >
+            {isPending ? <Loader2Icon className="animate-spin" /> : <CheckCheckIcon />}
+            Monitor all ({unmonitoredInView.length})
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isPending || monitoredInView.length === 0}
+            onClick={() => handleBulkToggle(false)}
+          >
+            {isPending ? <Loader2Icon className="animate-spin" /> : <XIcon />}
+            Unmonitor all ({monitoredInView.length})
+          </Button>
+          <span className="text-muted-foreground text-xs">
+            Applies to the {filtered.length} repositor
+            {filtered.length === 1 ? "y" : "ies"} currently shown
+          </span>
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <EmptyState
