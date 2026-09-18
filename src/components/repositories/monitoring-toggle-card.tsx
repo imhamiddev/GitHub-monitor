@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { toggleRepositoryMonitoring } from "@/lib/github/repo-actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
@@ -17,10 +18,13 @@ export function MonitoringToggleCard({
   initialMonitored: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleChange(checked: boolean) {
     startTransition(async () => {
-      const result = await toggleRepositoryMonitoring(githubRepoId, checked);
+      const result = await runWithBar(() =>
+        toggleRepositoryMonitoring(githubRepoId, checked)
+      );
       if (!result.success) {
         toast.error(result.error);
         return;
