@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/lib/db";
-import { repositoryEventSetting } from "@/lib/db/schema";
+import { repository, repositoryEventSetting } from "@/lib/db/schema";
 import { getServerSession } from "@/lib/auth/session";
 import { getInstallationForUser } from "@/lib/github/installations";
 import { setRepositoryMonitored } from "@/lib/github/repo-sync";
@@ -59,10 +59,9 @@ export async function updateEventCategorySetting(
   if (!installation) return { success: false, error: "GitHub is not connected." };
 
   const repo = await db.query.repository.findFirst({
-    where: (row, { eq: eqOp }) =>
-      eqOp(row.id, repositoryId) && eqOp(row.installationId, installation.id),
+    where: and(eq(repository.id, repositoryId), eq(repository.installationId, installation.id)),
   });
-  if (!repo || repo.installationId !== installation.id) {
+  if (!repo) {
     return { success: false, error: "Repository not found." };
   }
 
