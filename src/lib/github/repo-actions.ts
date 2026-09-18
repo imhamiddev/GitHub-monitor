@@ -41,6 +41,45 @@ export async function toggleRepositoryMonitoring(
   return { success: true };
 }
 
+/**
+ * Sets the monitored flag for many repositories at once — used by the
+ * "Monitor all / Unmonitor all" bulk action. Applies one at a time
+ * server-side (each may still need a first-time GitHub metadata sync)
+ * but as a single round trip from the client instead of N.
+ */
+export async function bulkSetRepositoryMonitoring(
+  githubRepoIds: number[],
+  monitored: boolean
+): Promise<ActionResult> {
+  const session = await getServerSession();
+  if (!session) return { success: false, error: "Not authenticated." };
+
+  const installation = await getInstallationForUser(session.user.id);
+  if (!installation) return { success: false, error: "GitHub is not connected." };
+
+  if (githubRepoIds.length === 0) {
+    return { success: true };
+  }
+
+  try {
+    for (const githubRepoId of githubRepoIds) {
+      await setRepositoryMonitored({
+        installationDbId: installation.id,
+        installationId: installation.installationId,
+        githubRepoId,
+        monitored,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to bulk-update repository monitoring:", error);
+    return { success: false, error: "Could not update all repositories." };
+  }
+
+  revalidatePath("/repositories");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function updateEventCategorySetting(
   repositoryId: string,
   category: EventCategory,
