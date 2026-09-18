@@ -62,10 +62,13 @@ documented inline in that file. In short, you'll need:
 
 ```bash
 npm install
-npx drizzle-kit push
+npm run db:migrate
 ```
 
-This applies the schema in `src/lib/db/schema.ts` to your database.
+This applies the SQL migrations in `src/drizzle/` to your database. (During
+active development, `npm run db:push` syncs the schema directly without
+generating a migration file — useful for quick iteration, but `db:migrate`
+is what you want for a real deployment.)
 
 ## 4. Run locally
 
