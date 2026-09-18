@@ -5,14 +5,16 @@ import { CheckCheckIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { markAllNotificationsRead } from "@/lib/notifications/actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Button } from "@/components/ui/button";
 
 export function MarkAllReadButton({ disabled }: { disabled?: boolean }) {
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleClick() {
     startTransition(async () => {
-      const result = await markAllNotificationsRead();
+      const result = await runWithBar(() => markAllNotificationsRead());
       if (result.success) {
         toast.success("All notifications marked as read");
       } else {
