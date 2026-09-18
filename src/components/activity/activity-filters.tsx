@@ -34,6 +34,7 @@ const EVENT_TYPE_OPTIONS = [
   { value: "release", label: EVENT_CATEGORY_LABELS.release },
   { value: "workflow_run", label: EVENT_CATEGORY_LABELS.workflow_run },
   { value: "deployment", label: EVENT_CATEGORY_LABELS.deployment },
+  { value: "follower", label: "Followers" },
 ];
 
 export function ActivityFilters({ repositories }: { repositories: RepoOption[] }) {
