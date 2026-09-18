@@ -52,14 +52,7 @@ export default async function GithubSettingsPage({
   const statusMessage = statusKey ? STATUS_MESSAGES[statusKey] : undefined;
 
   return (
-    <div className="flex max-w-2xl flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">GitHub connection</h1>
-        <p className="text-muted-foreground text-sm">
-          Manage how GitHub Monitor connects to your GitHub account.
-        </p>
-      </div>
-
+    <div className="flex flex-col gap-6">
       {statusMessage && (
         <Alert variant={statusMessage.variant}>
           {statusMessage.variant === "success" ? (
