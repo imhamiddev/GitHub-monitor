@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { LoadingBarProvider } from "@/components/layout/loading-bar";
+import { NavigationLoadingBar } from "@/components/layout/navigation-loading-bar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,8 +36,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <LoadingBarProvider>
+            <NavigationLoadingBar />
+            {children}
+            <Toaster />
+          </LoadingBarProvider>
         </ThemeProvider>
       </body>
     </html>
