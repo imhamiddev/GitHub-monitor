@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { signUp } from "@/lib/auth/client";
 import { signUpSchema, type SignUpInput } from "@/lib/auth/validation";
 import { cn } from "@/lib/utils";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,6 +26,7 @@ import { Label } from "@/components/ui/label";
 export function RegisterForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const runWithBar = useLoadingBarAction();
 
   const {
     register,
@@ -36,11 +38,13 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
 
   async function onSubmit(values: SignUpInput) {
     setIsSubmitting(true);
-    const { error } = await signUp.email({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
+    const { error } = await runWithBar(() =>
+      signUp.email({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      })
+    );
     setIsSubmitting(false);
 
     if (error) {
