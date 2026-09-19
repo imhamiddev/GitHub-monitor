@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   ActivityIcon,
-  BellIcon,
+  FilterIcon,
   GitPullRequestIcon,
   StarIcon,
   UsersIcon,
@@ -20,10 +20,10 @@ const features = [
       "See stars, forks, issues, pull requests, and releases across all your repositories the moment they happen.",
   },
   {
-    icon: BellIcon,
-    title: "Smart notifications",
+    icon: FilterIcon,
+    title: "Fine-grained tracking",
     description:
-      "Choose exactly which events matter for each repository, and get notified only about those.",
+      "Choose exactly which event types matter for each repository, and keep your activity feed free of noise.",
   },
   {
     icon: UsersIcon,
