@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 const SETTINGS_TABS = [
   { href: "/settings/account", label: "Account" },
   { href: "/settings/github", label: "GitHub" },
-  { href: "/settings/notifications", label: "Notifications" },
 ];
 
 export function SettingsNav() {
