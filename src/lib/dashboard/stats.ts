@@ -1,18 +1,13 @@
 import { and, count, desc, eq, gte } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import {
-  githubEvent,
-  githubInstallation,
-  notification,
-  repository,
-} from "@/lib/db/schema";
+import { githubEvent, githubInstallation, repository } from "@/lib/db/schema";
 
 export type DashboardStats = {
   repositoriesCount: number;
   monitoredCount: number;
   eventsTodayCount: number;
-  unreadCount: number;
+  totalEventsCount: number;
 };
 
 function startOfTodayUtc(): Date {
@@ -30,19 +25,20 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       repositoriesCount: 0,
       monitoredCount: 0,
       eventsTodayCount: 0,
-      unreadCount: 0,
+      totalEventsCount: 0,
     };
   }
 
-  const [repoCountResult, unreadResult] = await Promise.all([
+  const [repoCountResult, totalEventsResult] = await Promise.all([
     db
       .select({ total: count() })
       .from(repository)
       .where(eq(repository.installationId, installation.id)),
     db
       .select({ total: count() })
-      .from(notification)
-      .where(and(eq(notification.userId, userId), eq(notification.read, false))),
+      .from(githubEvent)
+      .innerJoin(repository, eq(githubEvent.repositoryId, repository.id))
+      .where(eq(repository.installationId, installation.id)),
   ]);
 
   const [monitoredResult] = await db
@@ -67,7 +63,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     repositoriesCount: repoCountResult[0]?.total ?? 0,
     monitoredCount: monitoredResult?.total ?? 0,
     eventsTodayCount: eventsTodayResult?.total ?? 0,
-    unreadCount: unreadResult[0]?.total ?? 0,
+    totalEventsCount: totalEventsResult[0]?.total ?? 0,
   };
 }
 
