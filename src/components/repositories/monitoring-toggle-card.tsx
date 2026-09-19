@@ -46,8 +46,8 @@ export function MonitoringToggleCard({
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground text-sm">
-          When enabled, GitHub Monitor tracks activity in {repoName} and sends
-          notifications based on your settings below.
+          When enabled, GitHub Monitor tracks activity in {repoName} based
+          on your event settings below.
         </p>
       </CardContent>
     </Card>
