@@ -40,7 +40,7 @@ export function EventSettingRow({
         defaultChecked={initialEnabled}
         onCheckedChange={handleChange}
         disabled={isPending}
-        aria-label={`Toggle ${label} notifications`}
+        aria-label={`Toggle tracking for ${label}`}
       />
     </div>
   );
