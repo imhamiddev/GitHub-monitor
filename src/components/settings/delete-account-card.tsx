@@ -56,7 +56,7 @@ export function DeleteAccountCard() {
         <CardTitle className="text-base">Delete account</CardTitle>
         <CardDescription>
           Permanently delete your account and all associated data — repositories,
-          activity history, and notifications. This cannot be undone.
+          activity history, and settings. This cannot be undone.
         </CardDescription>
       </CardHeader>
       <CardContent>
