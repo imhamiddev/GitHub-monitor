@@ -42,11 +42,11 @@ export async function changePassword(
 /**
  * Deletes the user's account. Better Auth cascades the deletion
  * through our schema's onDelete: "cascade" foreign keys (sessions,
- * accounts, githubInstallation → repositories → events →
- * notifications), so no manual cleanup is needed here. Disconnecting
- * the GitHub App installation itself (uninstalling on GitHub's side)
- * should be done by the user beforehand via Settings → GitHub;
- * account deletion does not reach out to GitHub's API.
+ * accounts, githubInstallation → repositories → events), so no
+ * manual cleanup is needed here. Disconnecting the GitHub App
+ * installation itself (uninstalling on GitHub's side) should be done
+ * by the user beforehand via Settings → GitHub; account deletion does
+ * not reach out to GitHub's API.
  */
 export async function deleteAccount(password: string): Promise<ActionResult> {
   const session = await getServerSession();
