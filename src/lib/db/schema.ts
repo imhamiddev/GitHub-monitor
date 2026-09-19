@@ -145,7 +145,7 @@ export const repository = pgTable(
 );
 
 // One row per (repository, event type) — toggles whether that event
-// type generates notifications for that repository.
+// type is tracked (stored and shown) for that repository's activity feed.
 export const repositoryEventSetting = pgTable(
   "repository_event_setting",
   {
@@ -192,29 +192,6 @@ export const githubEvent = pgTable(
 );
 
 /* ------------------------------------------------------------------ */
-/*  Notifications                                                     */
-/* ------------------------------------------------------------------ */
-
-export const notification = pgTable(
-  "notification",
-  {
-    id: text("id").primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    eventId: text("event_id")
-      .notNull()
-      .references(() => githubEvent.id, { onDelete: "cascade" }),
-    read: boolean("read").notNull().default(false),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-  },
-  (t) => [
-    index("notification_user_id_idx").on(t.userId),
-    index("notification_user_read_idx").on(t.userId, t.read),
-  ]
-);
-
-/* ------------------------------------------------------------------ */
 /*  Follower snapshots (polled via Vercel Cron — GitHub has no        */
 /*  "follow" webhook event)                                           */
 /* ------------------------------------------------------------------ */
@@ -231,18 +208,6 @@ export const followerSnapshot = pgTable(
   },
   (t) => [uniqueIndex("follower_snapshot_unique_idx").on(t.userId, t.githubLogin)]
 );
-
-/* ------------------------------------------------------------------ */
-/*  User-level preferences                                            */
-/* ------------------------------------------------------------------ */
-
-export const userSettings = pgTable("user_settings", {
-  userId: text("user_id")
-    .primaryKey()
-    .references(() => user.id, { onDelete: "cascade" }),
-  notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
 
 /* ------------------------------------------------------------------ */
 /*  Webhook delivery log (defense-in-depth idempotency +              */
@@ -267,15 +232,10 @@ export const webhookDelivery = pgTable(
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 
-export const userRelations = relations(user, ({ many, one }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   githubInstallations: many(githubInstallation),
-  notifications: many(notification),
-  settings: one(userSettings, {
-    fields: [user.id],
-    references: [userSettings.userId],
-  }),
 }));
 
 export const githubInstallationRelations = relations(
@@ -298,18 +258,9 @@ export const repositoryRelations = relations(repository, ({ one, many }) => ({
   events: many(githubEvent),
 }));
 
-export const githubEventRelations = relations(githubEvent, ({ one, many }) => ({
+export const githubEventRelations = relations(githubEvent, ({ one }) => ({
   repository: one(repository, {
     fields: [githubEvent.repositoryId],
     references: [repository.id],
-  }),
-  notifications: many(notification),
-}));
-
-export const notificationRelations = relations(notification, ({ one }) => ({
-  user: one(user, { fields: [notification.userId], references: [user.id] }),
-  event: one(githubEvent, {
-    fields: [notification.eventId],
-    references: [githubEvent.id],
   }),
 }));
