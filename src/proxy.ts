@@ -5,7 +5,6 @@ const PROTECTED_PREFIXES = [
   "/dashboard",
   "/repositories",
   "/activity",
-  "/notifications",
   "/statistics",
   "/settings",
 ];
@@ -46,7 +45,6 @@ export const config = {
     "/dashboard/:path*",
     "/repositories/:path*",
     "/activity/:path*",
-    "/notifications/:path*",
     "/statistics/:path*",
     "/settings/:path*",
     "/login",
