@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
   ActivityIcon,
-  BellIcon,
+  DatabaseIcon,
   FolderGitIcon,
   GitBranchIcon,
 } from "lucide-react";
@@ -75,9 +75,9 @@ export default async function DashboardPage() {
           icon={ActivityIcon}
         />
         <StatCard
-          label="Unread Notifications"
-          value={stats.unreadCount}
-          icon={BellIcon}
+          label="Total Events"
+          value={stats.totalEventsCount}
+          icon={DatabaseIcon}
         />
       </div>
 
