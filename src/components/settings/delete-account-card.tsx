@@ -6,6 +6,7 @@ import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import { deleteAccount } from "@/lib/auth/account-actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,10 +35,11 @@ export function DeleteAccountCard() {
   const [password, setPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleDelete() {
     startTransition(async () => {
-      const result = await deleteAccount(password);
+      const result = await runWithBar(() => deleteAccount(password));
       if (result.success) {
         toast.success("Your account has been deleted.");
         router.push("/");
