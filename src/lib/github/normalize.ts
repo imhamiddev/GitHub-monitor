@@ -261,7 +261,7 @@ function normalizeWorkflowRun(payload: WorkflowRunEvent): NormalizedEvent | null
   const run = payload.workflow_run;
 
   // "requested"/"in_progress" = started; only report meaningful terminal
-  // states plus the initial start, to avoid noisy duplicate notifications.
+  // states plus the initial start, to avoid noisy duplicate entries.
   if (payload.action === "requested") {
     return {
       action: "started",

@@ -14,10 +14,10 @@ export async function findMonitoredRepositoryByGithubId(githubRepoId: number) {
 }
 
 /**
- * Returns whether notifications for a given event category are enabled
- * for a repository. Defaults to enabled if no explicit setting row
- * exists yet (opt-out model — a newly monitored repo notifies for
- * everything until the user turns categories off).
+ * Returns whether a given event category is tracked (stored and shown
+ * in the activity feed) for a repository. Defaults to enabled if no
+ * explicit setting row exists yet (opt-out model — a newly monitored
+ * repo tracks everything until the user turns categories off).
  */
 export async function isEventCategoryEnabled(
   repositoryId: string,

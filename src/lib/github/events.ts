@@ -34,7 +34,7 @@ export const EVENT_CATEGORY_LABELS: Record<EventCategory, string> = {
 /**
  * Maps a raw GitHub webhook event name (the X-GitHub-Event header) to
  * our internal event category, used to look up whether the repository
- * has that category of notification enabled.
+ * is tracking that category of event.
  */
 export const WEBHOOK_EVENT_TO_CATEGORY: Record<string, EventCategory> = {
   push: "push",
