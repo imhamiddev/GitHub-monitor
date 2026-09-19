@@ -128,8 +128,7 @@ export function GithubConnectionCard({ connection }: { connection: ConnectionSta
                 <AlertDialogTitle>Disconnect GitHub?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This removes GitHub Monitor&apos;s access to your repositories
-                  and stops all monitoring and notifications. You can reconnect
-                  at any time.
+                  and stops all monitoring. You can reconnect at any time.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
