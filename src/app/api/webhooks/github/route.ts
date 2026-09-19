@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
-import { githubEvent, notification, webhookDelivery } from "@/lib/db/schema";
+import { githubEvent, webhookDelivery } from "@/lib/db/schema";
 import { WEBHOOK_EVENT_TO_CATEGORY } from "@/lib/github/events";
 import { normalizeGithubEvent } from "@/lib/github/normalize";
 import {
@@ -10,7 +10,6 @@ import {
   isEventCategoryEnabled,
 } from "@/lib/github/repositories";
 import { markInstallationRevoked } from "@/lib/github/installations";
-import { getNotificationsEnabled } from "@/lib/notifications/settings";
 import { verifyGithubWebhookSignature } from "@/lib/security/webhook";
 
 export const runtime = "nodejs";
@@ -122,24 +121,6 @@ export async function POST(request: NextRequest) {
     summary: normalized.summary,
     url: normalized.url,
   });
-
-  // Fan out a notification to the repo owner (the user who owns this
-  // installation). Multi-user shared installations aren't modeled yet,
-  // so this is currently always exactly one recipient.
-  const installation = await db.query.githubInstallation.findFirst({
-    where: (row, { eq }) => eq(row.id, repo.installationId),
-  });
-
-  if (installation) {
-    const notificationsEnabled = await getNotificationsEnabled(installation.userId);
-    if (notificationsEnabled) {
-      await db.insert(notification).values({
-        id: randomUUID(),
-        userId: installation.userId,
-        eventId,
-      });
-    }
-  }
 
   await recordDelivery(deliveryId, eventType);
   return NextResponse.json({ ok: true });
