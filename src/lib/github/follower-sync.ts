@@ -6,11 +6,9 @@ import {
   followerSnapshot,
   githubEvent,
   githubInstallation,
-  notification,
   repository,
 } from "@/lib/db/schema";
 import { getInstallationOctokit } from "@/lib/github/app";
-import { getNotificationsEnabled } from "@/lib/notifications/settings";
 
 export type FollowerSyncResult = {
   userId: string;
@@ -90,12 +88,12 @@ export async function syncFollowersForInstallation(
 
 /**
  * Records follower/unfollow changes as githubEvent rows so they show
- * up in Activity/Notifications alongside repository events. These
- * events aren't tied to a specific repository, so we attach them to
- * the installation's first repository purely to satisfy the FK
- * constraint and give the UI something to group by. If the
- * installation has no repositories yet, follower events are skipped —
- * there would be nothing to attach them to.
+ * up in the Activity feed alongside repository events. These events
+ * aren't tied to a specific repository, so we attach them to the
+ * installation's first repository purely to satisfy the FK constraint
+ * and give the UI something to group by. If the installation has no
+ * repositories yet, follower events are skipped — there would be
+ * nothing to attach them to.
  */
 async function recordFollowerEvents(params: {
   installationDbId: string;
@@ -110,16 +108,14 @@ async function recordFollowerEvents(params: {
   if (!anyRepo) return;
   const repositoryId = anyRepo.id;
 
-  const notificationsEnabled = await getNotificationsEnabled(params.userId);
   let runningCount = params.followersBefore;
 
   async function insertFollowerEvent(login: string, action: "followed" | "unfollowed") {
     const before = runningCount;
     runningCount += action === "followed" ? 1 : -1;
-    const eventId = randomUUID();
 
     await db.insert(githubEvent).values({
-      id: eventId,
+      id: randomUUID(),
       repositoryId,
       // Synthetic delivery id: follower events don't come from a
       // webhook delivery, so we mint a unique id ourselves to satisfy
@@ -136,10 +132,6 @@ async function recordFollowerEvents(params: {
       },
       url: `https://github.com/${login}`,
     });
-
-    if (notificationsEnabled) {
-      await db.insert(notification).values({ id: randomUUID(), userId: params.userId, eventId });
-    }
   }
 
   for (const login of params.newFollowers) {
