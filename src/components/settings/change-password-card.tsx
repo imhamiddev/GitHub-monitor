@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { changePassword } from "@/lib/auth/account-actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,6 +36,7 @@ type FormValues = z.infer<typeof schema>;
 
 export function ChangePasswordCard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const runWithBar = useLoadingBarAction();
   const {
     register,
     handleSubmit,
@@ -44,7 +46,9 @@ export function ChangePasswordCard() {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    const result = await changePassword(values.currentPassword, values.newPassword);
+    const result = await runWithBar(() =>
+      changePassword(values.currentPassword, values.newPassword)
+    );
     setIsSubmitting(false);
 
     if (result.success) {
