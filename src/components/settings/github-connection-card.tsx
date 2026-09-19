@@ -7,6 +7,7 @@ import { CheckCircle2Icon, ExternalLinkIcon, GitBranch, Loader2Icon } from "luci
 import { toast } from "sonner";
 
 import { disconnectGithub } from "@/lib/github/actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,10 +37,11 @@ export function GithubConnectionCard({ connection }: { connection: ConnectionSta
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const runWithBar = useLoadingBarAction();
 
   function handleDisconnect() {
     startTransition(async () => {
-      const result = await disconnectGithub();
+      const result = await runWithBar(() => disconnectGithub());
       if (result.success) {
         toast.success("GitHub account disconnected.");
         setDialogOpen(false);
