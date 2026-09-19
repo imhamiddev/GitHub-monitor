@@ -70,9 +70,10 @@ export default async function RepositoryDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Notifications</CardTitle>
+          <CardTitle className="text-base">Tracked Events</CardTitle>
           <CardDescription>
-            Choose which kinds of events notify you for this repository.
+            Choose which kinds of events are tracked and shown in your
+            activity feed for this repository.
           </CardDescription>
         </CardHeader>
         <CardContent className="divide-y">
