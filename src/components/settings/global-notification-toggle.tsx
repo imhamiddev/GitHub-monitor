@@ -4,15 +4,17 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { setGlobalNotificationsEnabled } from "@/lib/notifications/settings";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
 export function GlobalNotificationToggle({ initialEnabled }: { initialEnabled: boolean }) {
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   function handleChange(checked: boolean) {
     startTransition(async () => {
-      const result = await setGlobalNotificationsEnabled(checked);
+      const result = await runWithBar(() => setGlobalNotificationsEnabled(checked));
       if (result.success) {
         toast.success(checked ? "Notifications enabled" : "Notifications disabled");
       } else {
