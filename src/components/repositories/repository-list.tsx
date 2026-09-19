@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import type { RepoListItem } from "@/lib/github/repo-sync";
 import { bulkSetRepositoryMonitoring } from "@/lib/github/repo-actions";
+import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,6 +27,7 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
   const [monitorFilter, setMonitorFilter] = useState<MonitorFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [isPending, startTransition] = useTransition();
+  const runWithBar = useLoadingBarAction();
 
   const filtered = useMemo(() => {
     let result = repos;
@@ -60,9 +62,11 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
     if (targets.length === 0) return;
 
     startTransition(async () => {
-      const result = await bulkSetRepositoryMonitoring(
-        targets.map((r) => r.githubRepoId),
-        monitored
+      const result = await runWithBar(() =>
+        bulkSetRepositoryMonitoring(
+          targets.map((r) => r.githubRepoId),
+          monitored
+        )
       );
       if (result.success) {
         toast.success(
