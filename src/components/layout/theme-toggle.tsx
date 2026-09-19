@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 
@@ -20,10 +19,10 @@ const THEME_OPTIONS = [
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  // Avoid rendering the theme-dependent icon before hydration, since
-  // the server doesn't know the client's stored preference.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // next-themes reports theme as undefined until after hydration, since
+  // the server can't know the client's stored preference. We use that
+  // directly instead of a separate "mounted" state + effect.
+  const mounted = theme !== undefined;
 
   const current = THEME_OPTIONS.find((option) => option.value === theme) ?? THEME_OPTIONS[2];
   const CurrentIcon = current.icon;
