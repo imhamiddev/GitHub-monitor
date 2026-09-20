@@ -67,6 +67,28 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
   };
 }
 
+/**
+ * Lightweight count-only query used for polling: how many events have
+ * arrived since a given timestamp. Deliberately returns just a number
+ * (no rows), so this is cheap enough to call every ~15s from the client.
+ */
+export async function getNewEventsCountSince(userId: string, since: Date): Promise<number> {
+  const installation = await db.query.githubInstallation.findFirst({
+    where: eq(githubInstallation.userId, userId),
+  });
+  if (!installation) return 0;
+
+  const [result] = await db
+    .select({ total: count() })
+    .from(githubEvent)
+    .innerJoin(repository, eq(githubEvent.repositoryId, repository.id))
+    .where(
+      and(eq(repository.installationId, installation.id), gte(githubEvent.createdAt, since))
+    );
+
+  return result?.total ?? 0;
+}
+
 export type RecentActivityItem = {
   id: string;
   eventType: string;
