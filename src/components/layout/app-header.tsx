@@ -3,11 +3,14 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Fragment } from "react";
+import { SearchIcon } from "lucide-react";
 
 import { NAV_ITEMS } from "@/lib/constants/nav";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { openCommandPalette } from "@/components/layout/command-palette";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -66,6 +69,27 @@ export function AppHeader() {
           })}
         </BreadcrumbList>
       </Breadcrumb>
+      <Button
+        variant="outline"
+        size="sm"
+        className="text-muted-foreground hidden gap-2 sm:flex"
+        onClick={openCommandPalette}
+      >
+        <SearchIcon className="size-3.5" />
+        Search...
+        <kbd className="bg-muted pointer-events-none ml-2 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none md:inline-flex">
+          <span className="text-xs">⌘</span>K
+        </kbd>
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="sm:hidden"
+        onClick={openCommandPalette}
+        aria-label="Search"
+      >
+        <SearchIcon />
+      </Button>
       <ThemeToggle />
     </header>
   );
