@@ -11,8 +11,11 @@ import {
 import { getServerSession } from "@/lib/auth/session";
 import { getInstallationForUser } from "@/lib/github/installations";
 import { getStatistics } from "@/lib/statistics/counts";
+import { getDailyEventCounts } from "@/lib/statistics/daily-counts";
 import { subDays } from "@/lib/activity/group-by-day";
 import { StatisticsRangePicker } from "@/components/statistics/statistics-range-picker";
+import { ActivityTrendChart } from "@/components/statistics/activity-trend-chart";
+import { EventBreakdownChart } from "@/components/statistics/event-breakdown-chart";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -66,7 +69,10 @@ export default async function StatisticsPage({
   const toParam = typeof params.to === "string" ? params.to : undefined;
 
   const { from, to } = resolveRange(preset, fromParam, toParam);
-  const stats = await getStatistics(session.user.id, from, to);
+  const [stats, dailyCounts] = await Promise.all([
+    getStatistics(session.user.id, from, to),
+    getDailyEventCounts(session.user.id, 30),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -94,6 +100,11 @@ export default async function StatisticsPage({
         />
         <StatCard label="Issues" value={stats.issues} icon={CircleDotIcon} />
         <StatCard label="Releases" value={stats.releases} icon={RocketIcon} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ActivityTrendChart data={dailyCounts} />
+        <EventBreakdownChart stats={stats} />
       </div>
     </div>
   );
