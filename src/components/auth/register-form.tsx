@@ -53,7 +53,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
     }
 
     toast.success("Account created — welcome!");
-    router.push("/dashboard");
+    router.push("/onboarding");
     router.refresh();
   }
 
