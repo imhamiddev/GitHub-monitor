@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getServerSession } from "@/lib/auth/session";
 import { getMonitoredRepositoriesForFilter } from "@/lib/activity/list";
+import { hasCompletedOnboarding } from "@/lib/onboarding/actions";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
 import { CommandPalette } from "@/components/layout/command-palette";
@@ -18,6 +19,14 @@ export default async function AppLayout({
 
   if (!session) {
     redirect("/login");
+  }
+
+  // Anyone who hasn't finished the setup wizard is sent there first,
+  // regardless of how they arrived here (direct URL, bookmark, etc.) —
+  // not just right after sign-up.
+  const onboardingDone = await hasCompletedOnboarding(session.user.id);
+  if (!onboardingDone) {
+    redirect("/onboarding");
   }
 
   const monitoredRepos = await getMonitoredRepositoriesForFilter(session.user.id);
