@@ -110,7 +110,7 @@ export function OnboardingWizard({
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
-                <a href="/api/github/connect">
+                <a href="/api/github/connect?returnTo=onboarding">
                   <GitBranch />
                   Connect GitHub
                 </a>
