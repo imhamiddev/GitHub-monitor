@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { getServerSession } from "@/lib/auth/session";
+import { getMonitoredRepositoriesForFilter } from "@/lib/activity/list";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
+import { CommandPalette } from "@/components/layout/command-palette";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function AppLayout({
@@ -18,6 +20,8 @@ export default async function AppLayout({
     redirect("/login");
   }
 
+  const monitoredRepos = await getMonitoredRepositoriesForFilter(session.user.id);
+
   return (
     <SidebarProvider>
       <AppSidebar
@@ -31,6 +35,13 @@ export default async function AppLayout({
         <AppHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">{children}</div>
       </SidebarInset>
+      <CommandPalette
+        repos={monitoredRepos.map((repo) => ({
+          id: repo.id,
+          name: repo.name,
+          fullName: repo.fullName,
+        }))}
+      />
     </SidebarProvider>
   );
 }
