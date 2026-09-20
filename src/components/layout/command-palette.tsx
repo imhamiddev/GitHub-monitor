@@ -24,6 +24,10 @@ import {
 
 export type CommandPaletteRepo = { id: string; name: string; fullName: string };
 
+export function openCommandPalette() {
+  document.dispatchEvent(new Event("open-command-palette"));
+}
+
 const NAV_COMMANDS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
   { label: "Repositories", href: "/repositories", icon: FolderGitIcon },
@@ -41,15 +45,24 @@ export function CommandPalette({ repos }: { repos: CommandPaletteRepo[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        setOpen((prev) => !prev);
-      }
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      setOpen((prev) => !prev);
     }
+  }
+
+  useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    function handleOpenRequest() {
+      setOpen(true);
+    }
+    document.addEventListener("open-command-palette", handleOpenRequest);
+    return () => document.removeEventListener("open-command-palette", handleOpenRequest);
   }, []);
 
   function navigate(href: string) {
