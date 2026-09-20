@@ -3,10 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth/session";
 import { getAppOctokit } from "@/lib/github/app";
 import { upsertInstallation } from "@/lib/github/installations";
-import { verifyInstallState } from "@/lib/security/install-state";
+import { verifyInstallState, type InstallReturnTarget } from "@/lib/security/install-state";
 
-function redirectToSettings(request: NextRequest, params: Record<string, string>) {
-  const url = new URL("/settings/github", request.url);
+function redirectTo(
+  request: NextRequest,
+  target: InstallReturnTarget,
+  params: Record<string, string>
+) {
+  const path = target === "onboarding" ? "/onboarding" : "/settings/github";
+  const url = new URL(path, request.url);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
@@ -24,20 +29,23 @@ export async function GET(request: NextRequest) {
   const setupAction = searchParams.get("setup_action");
   const state = searchParams.get("state");
 
-  // "request" happens when a GitHub org requires owner approval for app
-  // installs — there's no installation_id yet, so just inform the user.
+  // Without a valid state we can't know the intended return target —
+  // "request" (org approval pending) and missing-param cases fall back
+  // to settings, the safe default.
   if (setupAction === "request") {
-    return redirectToSettings(request, { status: "pending_approval" });
+    return redirectTo(request, "settings", { status: "pending_approval" });
   }
 
   if (!installationId || !state) {
-    return redirectToSettings(request, { status: "missing_params" });
+    return redirectTo(request, "settings", { status: "missing_params" });
   }
 
   const stateCheck = verifyInstallState(state, session.user.id);
   if (!stateCheck.valid) {
-    return redirectToSettings(request, { status: "invalid_state" });
+    return redirectTo(request, "settings", { status: "invalid_state" });
   }
+
+  const returnTo = stateCheck.returnTo ?? "settings";
 
   try {
     const appOctokit = getAppOctokit();
@@ -47,7 +55,7 @@ export async function GET(request: NextRequest) {
 
     const account = installation.account;
     if (!account) {
-      return redirectToSettings(request, { status: "installation_error" });
+      return redirectTo(request, returnTo, { status: "installation_error" });
     }
 
     // GitHub's installation account can be a User or an Organization;
@@ -63,9 +71,9 @@ export async function GET(request: NextRequest) {
       githubAccountType: accountType,
     });
 
-    return redirectToSettings(request, { status: "connected" });
+    return redirectTo(request, returnTo, { status: "connected" });
   } catch (error) {
     console.error("GitHub App installation callback failed:", error);
-    return redirectToSettings(request, { status: "installation_error" });
+    return redirectTo(request, returnTo, { status: "installation_error" });
   }
 }
