@@ -105,7 +105,7 @@ export async function getMonitoredRepositoriesForFilter(userId: string) {
       eq(repository.installationId, installation.id),
       eq(repository.isMonitored, true)
     ),
-    columns: { id: true, name: true },
+    columns: { id: true, name: true, fullName: true },
     orderBy: (row, { asc }) => asc(row.name),
   });
 }
