@@ -3,6 +3,7 @@ import {
   ActivityIcon,
   FilterIcon,
   GitPullRequestIcon,
+  PlayCircleIcon,
   StarIcon,
   UsersIcon,
 } from "lucide-react";
@@ -49,6 +50,9 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <Button variant="ghost" asChild className="hidden sm:inline-flex">
+            <Link href="/demo">Demo</Link>
+          </Button>
           <Button variant="ghost" asChild>
             <Link href="/login">Sign in</Link>
           </Button>
@@ -77,9 +81,18 @@ export default function LandingPage() {
               <Link href="/register">Start monitoring — it&apos;s free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/login">I already have an account</Link>
+              <Link href="/demo">
+                <PlayCircleIcon />
+                View live demo
+              </Link>
             </Button>
           </div>
+          <Link
+            href="/login"
+            className="text-muted-foreground text-sm underline underline-offset-4"
+          >
+            I already have an account
+          </Link>
         </div>
 
         <div className="mt-20 grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
