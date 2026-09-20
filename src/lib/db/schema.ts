@@ -229,6 +229,18 @@ export const webhookDelivery = pgTable(
 );
 
 /* ------------------------------------------------------------------ */
+/*  Onboarding state — tracks whether a user has been shown/completed */
+/*  the post-signup setup wizard, so it only appears once.            */
+/* ------------------------------------------------------------------ */
+
+export const userOnboarding = pgTable("user_onboarding", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+});
+
+/* ------------------------------------------------------------------ */
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 
