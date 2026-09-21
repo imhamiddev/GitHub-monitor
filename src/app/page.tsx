@@ -110,6 +110,23 @@ export default function LandingPage() {
             </Card>
           ))}
         </div>
+
+        <div className="mt-16 flex w-full max-w-3xl flex-col items-center gap-4 rounded-xl border bg-muted/40 p-8 text-center">
+          <PlayCircleIcon className="text-primary size-8" />
+          <h2 className="text-xl font-semibold tracking-tight">
+            See it in action — no sign-up required
+          </h2>
+          <p className="text-muted-foreground text-balance">
+            Explore a fully interactive demo with sample repositories,
+            activity, and charts before you connect your own GitHub account.
+          </p>
+          <Button asChild>
+            <Link href="/demo">
+              <PlayCircleIcon />
+              Open the live demo
+            </Link>
+          </Button>
+        </div>
       </main>
 
       <footer className="text-muted-foreground border-t px-6 py-6 text-center text-sm">
