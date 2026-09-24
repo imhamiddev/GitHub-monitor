@@ -1,18 +1,48 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { LucideIcon } from "lucide-react";
+import {
+  ActivityIcon,
+  FilterIcon,
+  GitPullRequestIcon,
+  UsersIcon,
+} from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fadeUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
-export type Feature = {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-};
+// Defined here (not passed as a prop) because icon components are
+// functions, and functions can't cross the server -> client boundary as
+// props — only as JSX already rendered on the server, or defined locally
+// on the client like this.
+const features = [
+  {
+    icon: ActivityIcon,
+    title: "Real-time activity",
+    description:
+      "See stars, forks, issues, pull requests, and releases across all your repositories the moment they happen.",
+  },
+  {
+    icon: FilterIcon,
+    title: "Fine-grained tracking",
+    description:
+      "Choose exactly which event types matter for each repository, and keep your activity feed free of noise.",
+  },
+  {
+    icon: UsersIcon,
+    title: "Follower tracking",
+    description:
+      "Know when someone new follows you on GitHub, even though GitHub itself doesn't send that event.",
+  },
+  {
+    icon: GitPullRequestIcon,
+    title: "Pull request insights",
+    description:
+      "Track open, merged, and closed pull requests without leaving your dashboard.",
+  },
+];
 
-export function FeatureGrid({ features }: { features: Feature[] }) {
+export function FeatureGrid() {
   return (
     <motion.div
       variants={staggerContainer(0.06)}
