@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import { toggleRepositoryMonitoring } from "@/lib/github/repo-actions";
@@ -36,7 +37,12 @@ export function MonitoringToggleCard({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base">Monitoring</CardTitle>
+        <CardTitle className="flex items-center gap-1.5 text-base">
+          Monitoring
+          {isPending && (
+            <Loader2Icon className="text-muted-foreground size-3.5 animate-spin" />
+          )}
+        </CardTitle>
         <Switch
           defaultChecked={initialMonitored}
           onCheckedChange={handleChange}

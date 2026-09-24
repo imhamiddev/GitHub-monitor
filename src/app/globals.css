@@ -120,3 +120,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Respect the user's OS-level motion preference. Scales durations down to
+   near-zero instead of using `display: none`/`transition: none`, so
+   elements that rely on an animation's *end state* (e.g. animate-in
+   utilities that also set final opacity/transform) still land correctly. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

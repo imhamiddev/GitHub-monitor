@@ -2,18 +2,35 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { ExternalLinkIcon, GitForkIcon, PackageIcon, SettingsIcon, StarIcon } from "lucide-react";
+import {
+  ExternalLinkIcon,
+  GitForkIcon,
+  Loader2Icon,
+  PackageIcon,
+  SettingsIcon,
+  StarIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import type { RepoListItem } from "@/lib/github/repo-sync";
 import { toggleRepositoryMonitoring } from "@/lib/github/repo-actions";
 import { useLoadingBarAction } from "@/hooks/use-loading-bar-action";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
-export function RepositoryCard({ repo }: { repo: RepoListItem }) {
+export function RepositoryCard({
+  repo,
+  animateIn = false,
+  style,
+}: {
+  repo: RepoListItem;
+  /** Play the entrance animation (first paint only — see RepositoryList). */
+  animateIn?: boolean;
+  style?: React.CSSProperties;
+}) {
   const [isPending, startTransition] = useTransition();
   const runWithBar = useLoadingBarAction();
 
@@ -33,7 +50,13 @@ export function RepositoryCard({ repo }: { repo: RepoListItem }) {
   }
 
   return (
-    <Card>
+    <Card
+      style={style}
+      className={cn(
+        "transition-[border-color,box-shadow] duration-200 ease-out hover:border-foreground/20 hover:shadow-md",
+        animateIn && "animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards duration-300 ease-out"
+      )}
+    >
       <CardHeader className="gap-1">
         <div className="flex items-center gap-2">
           <PackageIcon className="text-muted-foreground size-4 shrink-0" />
@@ -63,8 +86,13 @@ export function RepositoryCard({ repo }: { repo: RepoListItem }) {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">
-            Monitoring: {repo.isMonitored ? "ON" : "OFF"}
+          <span className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium transition-colors duration-150">
+            {isPending ? (
+              <Loader2Icon className="size-3.5 animate-spin" />
+            ) : null}
+            <span className="text-foreground">
+              Monitoring: {repo.isMonitored ? "ON" : "OFF"}
+            </span>
           </span>
           <Switch
             checked={repo.isMonitored}

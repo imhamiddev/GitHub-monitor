@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { CheckCheckIcon, Loader2Icon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,6 +28,17 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [isPending, startTransition] = useTransition();
   const runWithBar = useLoadingBarAction();
+
+  // The card grid should only "reveal" once, on first paint. Filtering or
+  // sorting afterward should feel instant — re-triggering the entrance
+  // animation on every keystroke would be noisy, not premium. Keep the
+  // flag on long enough for the staggered entrance to finish, then flip
+  // it off so later re-renders (search/sort) skip the animation.
+  const [isInitialRender, setIsInitialRender] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsInitialRender(false), 500);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const filtered = useMemo(() => {
     let result = repos;
@@ -152,8 +163,19 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((repo) => (
-            <RepositoryCard key={repo.githubRepoId} repo={repo} />
+          {filtered.map((repo, index) => (
+            <RepositoryCard
+              key={repo.githubRepoId}
+              repo={repo}
+              // Only the first paint feels like a reveal; re-filtering
+              // (search/sort) should feel instant, not re-animate.
+              animateIn={isInitialRender}
+              style={
+                isInitialRender
+                  ? { animationDelay: `${Math.min(index, 8) * 30}ms` }
+                  : undefined
+              }
+            />
           ))}
         </div>
       )}

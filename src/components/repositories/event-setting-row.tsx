@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import { updateEventCategorySetting } from "@/lib/github/repo-actions";
@@ -34,8 +35,13 @@ export function EventSettingRow({
   }
 
   return (
-    <div className="flex items-center justify-between py-2.5">
-      <span className="text-sm">{label}</span>
+    <div className="hover:bg-accent/50 -mx-2 flex items-center justify-between rounded-md px-2 py-2.5 transition-colors duration-150">
+      <span className="flex items-center gap-1.5 text-sm">
+        {label}
+        {isPending && (
+          <Loader2Icon className="text-muted-foreground size-3.5 animate-spin" />
+        )}
+      </span>
       <Switch
         defaultChecked={initialEnabled}
         onCheckedChange={handleChange}
