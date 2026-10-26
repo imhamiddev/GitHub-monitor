@@ -1,5 +1,5 @@
 import { getEventDisplay } from "@/lib/github/event-display";
-import type { InlineButton } from "@/lib/telegram/api";
+import type { ButtonStyle, InlineButton } from "@/lib/telegram/api";
 
 export function escapeHtml(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -119,6 +119,15 @@ export function formatTimestamp(date: Date): string {
   return `${d.slice(0, 10)} · ${d.slice(11, 16)} UTC`;
 }
 
+/** Colours the primary action button by outcome: red = bad, green = good. */
+function eventButtonStyle(e: TelegramEventInput): ButtonStyle {
+  const action = e.action ?? "";
+  if (["failure", "error", "deleted", "cancelled", "unfollowed"].includes(action)) return "danger";
+  if (["success", "merged", "published", "followed"].includes(action)) return "success";
+  if (e.eventType === "star" || e.eventType === "release") return "success";
+  return "primary";
+}
+
 /** Builds the Telegram message (HTML + inline buttons) for a stored event. */
 export function formatEventMessage(e: TelegramEventInput): FormattedMessage {
   const display = getEventDisplay(e.eventType, e.action);
@@ -145,13 +154,21 @@ export function formatEventMessage(e: TelegramEventInput): FormattedMessage {
 
   const buttons: InlineButton[][] = [];
   const row: InlineButton[] = [];
-  if (e.url) row.push({ text: "🔗 View on GitHub", url: e.url });
+  if (e.url) row.push({ text: "🔗 View on GitHub", url: e.url, style: eventButtonStyle(e) });
   if (e.repositoryName && e.eventType !== "follower") {
-    row.push({ text: "📁 Repository", url: `https://github.com/${e.repositoryName}` });
+    row.push({
+      text: "📁 Repository",
+      url: `https://github.com/${e.repositoryName}`,
+      style: "primary",
+    });
   }
   if (e.eventType === "follower" && e.actorLogin) {
     row.length = 0;
-    row.push({ text: "👤 View profile", url: `https://github.com/${e.actorLogin}` });
+    row.push({
+      text: "👤 View profile",
+      url: `https://github.com/${e.actorLogin}`,
+      style: eventButtonStyle(e),
+    });
   }
   if (row.length > 0) buttons.push(row);
 
