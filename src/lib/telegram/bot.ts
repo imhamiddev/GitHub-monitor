@@ -43,9 +43,10 @@ function startOfTodayUtc(): Date {
 }
 
 function statsKeyboard(active: StatsRange): { inline_keyboard: InlineButton[][] } {
-  const label = (r: StatsRange, text: string) => ({
+  const label = (r: StatsRange, text: string): InlineButton => ({
     text: r === active ? `• ${text} •` : text,
     callback_data: CB.statsRange(r),
+    style: r === active ? "success" : "primary",
   });
   return {
     inline_keyboard: [
@@ -62,6 +63,8 @@ function notificationsKeyboard(enabled: boolean) {
         {
           text: enabled ? "⏸ Pause notifications" : "▶️ Resume notifications",
           callback_data: CB.toggleNotifications,
+          // Red = destructive action (pause), green = turn back on.
+          style: enabled ? "danger" : "success",
         },
       ],
     ] as InlineButton[][],
