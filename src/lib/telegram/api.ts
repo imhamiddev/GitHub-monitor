@@ -17,6 +17,22 @@ export function isTelegramConfigured(): boolean {
   return Boolean(process.env.TELEGRAM_BOT_TOKEN);
 }
 
+export type InlineButton =
+  | { text: string; url: string }
+  | { text: string; callback_data: string };
+
+export type ReplyKeyboard = {
+  keyboard: { text: string }[][];
+  resize_keyboard: boolean;
+  is_persistent: boolean;
+  input_field_placeholder?: string;
+};
+
+export type ReplyMarkup =
+  | { inline_keyboard: InlineButton[][] }
+  | ReplyKeyboard
+  | { remove_keyboard: true };
+
 export type SendResult =
   | { ok: true }
   | { ok: false; error: string; blocked: boolean };
@@ -45,7 +61,7 @@ async function callApi<T>(method: string, body: Record<string, unknown>) {
 export async function sendTelegramMessage(
   chatId: string,
   html: string,
-  options: { silent?: boolean } = {}
+  options: { silent?: boolean; replyMarkup?: ReplyMarkup } = {}
 ): Promise<SendResult> {
   try {
     const { status, data } = await callApi("sendMessage", {
@@ -54,6 +70,7 @@ export async function sendTelegramMessage(
       parse_mode: "HTML",
       link_preview_options: { is_disabled: true },
       disable_notification: options.silent ?? false,
+      ...(options.replyMarkup ? { reply_markup: options.replyMarkup } : {}),
     });
     if (data?.ok) return { ok: true };
     return {
@@ -74,7 +91,42 @@ export async function setTelegramWebhook(url: string, secretToken: string) {
   return callApi("setWebhook", {
     url,
     secret_token: secretToken,
-    allowed_updates: ["message"],
+    allowed_updates: ["message", "callback_query"],
     drop_pending_updates: false,
   });
+}
+
+/** Stops the loading spinner on an inline button; optional toast text. */
+export async function answerCallbackQuery(callbackQueryId: string, text?: string) {
+  try {
+    await callApi("answerCallbackQuery", { callback_query_id: callbackQueryId, text });
+  } catch (error) {
+    console.error("answerCallbackQuery failed:", error);
+  }
+}
+
+/** Edits a previously sent message in place (used for toggles/refresh). */
+export async function editTelegramMessage(
+  chatId: string,
+  messageId: number,
+  html: string,
+  replyMarkup?: { inline_keyboard: InlineButton[][] }
+) {
+  try {
+    await callApi("editMessageText", {
+      chat_id: chatId,
+      message_id: messageId,
+      text: html,
+      parse_mode: "HTML",
+      link_preview_options: { is_disabled: true },
+      ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+    });
+  } catch (error) {
+    console.error("editMessageText failed:", error);
+  }
+}
+
+/** Registers the "/" command menu shown in the bot's chat UI. */
+export async function setTelegramCommands(commands: { command: string; description: string }[]) {
+  return callApi("setMyCommands", { commands });
 }
