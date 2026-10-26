@@ -6,7 +6,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <p className="text-muted-foreground text-sm">
-          Manage your account and GitHub connection.
+          Manage your account, GitHub connection and Telegram notifications.
         </p>
       </div>
       <SettingsNav />

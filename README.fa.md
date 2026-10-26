@@ -234,6 +234,18 @@ npm run dev
 
 ---
 
+## 🤖 اعلان‌های تلگرام
+
+هر رویدادی که GitHub Monitor ثبت می‌کند (کامیت، ستاره، فورک، PR، ایشو، ریلیز، ورک‌فلو، دیپلوی، فالوور جدید و...) به‌صورت لحظه‌ای در تلگرام هم برای شما ارسال می‌شود.
+
+۱. با [@BotFather](https://t.me/BotFather) یک ربات بسازید و `TELEGRAM_BOT_TOKEN`، `TELEGRAM_BOT_USERNAME` و یک `TELEGRAM_WEBHOOK_SECRET` تصادفی را تنظیم کنید (فایل `.env.example`).
+۲. مایگریشن دیتابیس را اجرا کنید (`npm run db:migrate`) — جدول `telegram_connection` اضافه می‌شود.
+۳. بعد از دیپلوی، وب‌هوک ربات را یک‌بار ثبت کنید:
+   ```bash
+   curl -H "Authorization: Bearer $CRON_SECRET" https://<your-app>/api/telegram/setup
+   ```
+۴. در برنامه به **Settings → Telegram** بروید، بارکد را اسکن کنید یا روی **Open in Telegram** بزنید و در ربات **Start** را بزنید. دستورات ربات: `/status` و `/stop`.
+
 ## 🔒 امنیت
 
 یک ممیزی کامل بر اساس یک چک‌لیست ۱۹ موردی (احراز هویت، مجوزدهی، CSRF، XSS، SQLi، SSRF، IDOR، rate limiting و بیشتر) انجام شده — جزئیات در تاریخچه‌ی کامیت‌ها موجوده. نکات برجسته:

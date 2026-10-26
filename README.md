@@ -242,6 +242,18 @@ the tunnel while testing locally.
 
 ---
 
+## 🤖 Telegram notifications
+
+Every event GitHub Monitor records (commits, stars, forks, PRs, issues, releases, workflows, deployments, new followers…) can be mirrored to Telegram in real time.
+
+1. Create a bot with [@BotFather](https://t.me/BotFather) and set `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and a random `TELEGRAM_WEBHOOK_SECRET` (see `.env.example`).
+2. Run the database migration (`npm run db:migrate`) — it adds the `telegram_connection` table.
+3. After deploying, register the bot webhook once:
+   ```bash
+   curl -H "Authorization: Bearer $CRON_SECRET" https://<your-app>/api/telegram/setup
+   ```
+4. In the app, open **Settings → Telegram**, scan the QR code or press **Open in Telegram**, then press **Start** in the bot. Bot commands: `/status`, `/stop`.
+
 ## 🔒 Security
 
 A full audit against a 19-point checklist (auth, authorization, CSRF, XSS,
