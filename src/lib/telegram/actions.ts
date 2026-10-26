@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { telegramConnection } from "@/lib/db/schema";
 import { getServerSession } from "@/lib/auth/session";
 import { buildBotLink, isTelegramConfigured, sendTelegramMessage } from "@/lib/telegram/api";
+import { guestKeyboard } from "@/lib/telegram/keyboards";
 import { createLinkToken, getTelegramConnection, unlinkByUserId } from "@/lib/telegram/connection";
 
 type ActionResult<T = object> = ({ success: true } & T) | { success: false; error: string };
@@ -45,7 +46,8 @@ export async function disconnectTelegram(): Promise<ActionResult> {
   if (connection?.chatId) {
     await sendTelegramMessage(
       connection.chatId,
-      "🔌 This chat was disconnected from GitHub Monitor. You will no longer receive notifications."
+      "🔌 <b>Disconnected</b>\nThis chat was unlinked from your GitHub Monitor account. You will no longer receive notifications.\n\nSend /start to set things up again.",
+      { replyMarkup: guestKeyboard() }
     );
   }
   await unlinkByUserId(userId);
@@ -76,7 +78,7 @@ export async function sendTelegramTestMessage(): Promise<ActionResult> {
 
   const result = await sendTelegramMessage(
     connection.chatId,
-    "✅ <b>Test notification</b>\nGitHub Monitor can reach you here."
+    "✅ <b>Test notification</b>\n━━━━━━━━━━━━━━━━\nGitHub Monitor can reach you here. Everything is working! 🎉"
   );
   return result.ok ? { success: true } : { success: false, error: "Could not deliver the message." };
 }
