@@ -9,6 +9,7 @@ import {
   repository,
 } from "@/lib/db/schema";
 import { getInstallationOctokit } from "@/lib/github/app";
+import { notifyUserOfEvent } from "@/lib/telegram/notify";
 
 export type FollowerSyncResult = {
   userId: string;
@@ -107,6 +108,7 @@ async function recordFollowerEvents(params: {
   });
   if (!anyRepo) return;
   const repositoryId = anyRepo.id;
+  const userId = params.userId;
 
   let runningCount = params.followersBefore;
 
@@ -130,6 +132,15 @@ async function recordFollowerEvents(params: {
         followersBefore: before,
         followersAfter: runningCount,
       },
+      url: `https://github.com/${login}`,
+    });
+
+    await notifyUserOfEvent(userId, {
+      repositoryName: null,
+      eventType: "follower",
+      action,
+      actorLogin: login,
+      summary: { kind: "follower", followersBefore: before, followersAfter: runningCount },
       url: `https://github.com/${login}`,
     });
   }

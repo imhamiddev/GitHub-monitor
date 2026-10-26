@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 import { githubEvent, webhookDelivery } from "@/lib/db/schema";
@@ -11,6 +11,8 @@ import {
 } from "@/lib/github/repositories";
 import { markInstallationRevoked } from "@/lib/github/installations";
 import { verifyGithubWebhookSignature } from "@/lib/security/webhook";
+import { getUserIdForInstallation } from "@/lib/github/installations";
+import { notifyUserOfEvent } from "@/lib/telegram/notify";
 
 export const runtime = "nodejs";
 
@@ -123,6 +125,22 @@ export async function POST(request: NextRequest) {
   });
 
   await recordDelivery(deliveryId, eventType);
+
+  // Mirror the stored event to the owner's Telegram chat. Runs after the
+  // response is sent so GitHub's delivery isn't slowed down by Telegram.
+  after(async () => {
+    const userId = await getUserIdForInstallation(repo.installationId);
+    if (!userId) return;
+    await notifyUserOfEvent(userId, {
+      repositoryName: repo.fullName,
+      eventType,
+      action: normalized.action,
+      actorLogin: normalized.actorLogin,
+      summary: normalized.summary,
+      url: normalized.url,
+    });
+  });
+
   return NextResponse.json({ ok: true });
 }
 

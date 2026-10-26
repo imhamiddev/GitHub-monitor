@@ -20,6 +20,12 @@ export async function getInstallationById(id: string) {
   });
 }
 
+/** Resolves the owning user of an installation by its DB row id. */
+export async function getUserIdForInstallation(installationDbId: string): Promise<string | null> {
+  const row = await getInstallationById(installationDbId);
+  return row?.userId ?? null;
+}
+
 export async function getInstallationByGithubId(installationId: number) {
   return db.query.githubInstallation.findFirst({
     where: eq(githubInstallation.installationId, installationId),

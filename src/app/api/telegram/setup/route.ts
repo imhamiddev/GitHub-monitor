@@ -1,0 +1,31 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import { setTelegramWebhook } from "@/lib/telegram/api";
+import { timingSafeEqualString } from "@/lib/security/crypto";
+
+/**
+ * One-time (idempotent) registration of the bot webhook. Call after each
+ * deploy to a new domain:
+ *
+ *   curl -H "Authorization: Bearer $CRON_SECRET" https://your-app/api/telegram/setup
+ */
+export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  const auth = request.headers.get("authorization");
+  if (!cronSecret || !auth?.startsWith("Bearer ") || !timingSafeEqualString(auth.slice(7), cronSecret)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+  const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  if (!appUrl || !secret || !process.env.TELEGRAM_BOT_TOKEN) {
+    return NextResponse.json(
+      { error: "NEXT_PUBLIC_APP_URL, TELEGRAM_WEBHOOK_SECRET and TELEGRAM_BOT_TOKEN must be set" },
+      { status: 500 }
+    );
+  }
+
+  const webhookUrl = `${appUrl}/api/telegram/webhook`;
+  const { data } = await setTelegramWebhook(webhookUrl, secret);
+  return NextResponse.json({ webhookUrl, telegram: data });
+}
