@@ -17,12 +17,21 @@ export function isTelegramConfigured(): boolean {
   return Boolean(process.env.TELEGRAM_BOT_TOKEN);
 }
 
-export type InlineButton =
-  | { text: string; url: string }
-  | { text: string; callback_data: string };
+/**
+ * Button colour (Bot API 9.4+): "primary" = blue, "success" = green,
+ * "danger" = red. Older Telegram clients ignore it and show the default.
+ */
+export type ButtonStyle = "primary" | "success" | "danger";
+
+export type InlineButton = { text: string; style?: ButtonStyle } & (
+  | { url: string }
+  | { callback_data: string }
+);
+
+export type KeyboardButton = { text: string; style?: ButtonStyle };
 
 export type ReplyKeyboard = {
-  keyboard: { text: string }[][];
+  keyboard: KeyboardButton[][];
   resize_keyboard: boolean;
   is_persistent: boolean;
   input_field_placeholder?: string;
