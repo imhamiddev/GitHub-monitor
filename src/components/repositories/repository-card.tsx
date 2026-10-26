@@ -53,12 +53,15 @@ export function RepositoryCard({
     <Card
       style={style}
       className={cn(
-        "transition-[border-color,box-shadow] duration-200 ease-out hover:border-foreground/20 hover:shadow-md",
+        // h-full + flex column: every card in a grid row stretches to the
+        // same height, and the footer (toggle + buttons) is pinned to the
+        // bottom so controls line up across cards regardless of content.
+        "h-full gap-4 py-4 transition-[border-color,box-shadow] duration-200 ease-out hover:border-foreground/20 hover:shadow-md",
         animateIn && "animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards duration-300 ease-out"
       )}
     >
-      <CardHeader className="gap-1">
-        <div className="flex items-center gap-2">
+      <CardHeader className="gap-1 px-5">
+        <div className="flex h-6 items-center gap-2">
           <PackageIcon className="text-muted-foreground size-4 shrink-0" />
           <span className="truncate font-medium">{repo.name}</span>
           {repo.private && (
@@ -67,13 +70,18 @@ export function RepositoryCard({
             </Badge>
           )}
         </div>
-        {repo.description && (
-          <p className="text-muted-foreground line-clamp-2 text-sm">
-            {repo.description}
-          </p>
-        )}
+        {/* Always reserve two lines so cards with and without a
+            description keep identical vertical rhythm. */}
+        <p
+          className={cn(
+            "line-clamp-2 min-h-10 text-sm leading-5",
+            repo.description ? "text-muted-foreground" : "text-muted-foreground/50 italic"
+          )}
+        >
+          {repo.description || "No description"}
+        </p>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="mt-auto flex flex-col gap-3 px-5">
         <div className="text-muted-foreground flex items-center gap-4 text-sm">
           <span className="flex items-center gap-1">
             <StarIcon className="size-3.5" />
@@ -85,7 +93,7 @@ export function RepositoryCard({
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex h-6 items-center justify-between">
           <span className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium transition-colors duration-150">
             {isPending ? (
               <Loader2Icon className="size-3.5 animate-spin" />
@@ -102,8 +110,8 @@ export function RepositoryCard({
           />
         </div>
 
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" asChild className="flex-1">
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" size="sm" asChild>
             <a
               href={`https://github.com/${repo.fullName}`}
               target="_blank"
@@ -113,12 +121,17 @@ export function RepositoryCard({
               View
             </a>
           </Button>
-          {repo.id && (
-            <Button variant="outline" size="sm" asChild className="flex-1">
+          {repo.id ? (
+            <Button variant="outline" size="sm" asChild>
               <Link href={`/repositories/${repo.id}`}>
                 <SettingsIcon />
                 Settings
               </Link>
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" disabled>
+              <SettingsIcon />
+              Settings
             </Button>
           )}
         </div>
