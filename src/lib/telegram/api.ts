@@ -61,16 +61,33 @@ async function callApi<T>(method: string, body: Record<string, unknown>) {
     result?: T;
     description?: string;
     error_code?: number;
+    parameters?: { retry_after?: number };
   } | null;
 
   return { status: response.status, data };
 }
 
-/** Sends an HTML-formatted message. `blocked` = user blocked/removed the bot. */
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * A destination is permanently unreachable (bot blocked / kicked / chat
+ * gone) — the caller should stop sending there.
+ */
+function isGone(status: number, description?: string): boolean {
+  if (status === 403) return true;
+  return status === 400 && /chat not found|group chat was upgraded|bot was kicked/i.test(description ?? "");
+}
+
+/**
+ * Sends an HTML-formatted message. Honors Telegram's flood control: on
+ * HTTP 429 it waits `retry_after` (max 8s) and retries once.
+ * `blocked` = the user blocked/removed the bot (or the chat no longer exists).
+ */
 export async function sendTelegramMessage(
   chatId: string,
   html: string,
-  options: { silent?: boolean; replyMarkup?: ReplyMarkup } = {}
+  options: { silent?: boolean; replyMarkup?: ReplyMarkup } = {},
+  attempt = 0
 ): Promise<SendResult> {
   try {
     const { status, data } = await callApi("sendMessage", {
@@ -82,10 +99,17 @@ export async function sendTelegramMessage(
       ...(options.replyMarkup ? { reply_markup: options.replyMarkup } : {}),
     });
     if (data?.ok) return { ok: true };
+
+    if (status === 429 && attempt === 0) {
+      const waitMs = Math.min((data?.parameters?.retry_after ?? 1) * 1000, 8000);
+      await sleep(waitMs);
+      return sendTelegramMessage(chatId, html, options, 1);
+    }
+
     return {
       ok: false,
       error: data?.description ?? `HTTP ${status}`,
-      blocked: status === 403,
+      blocked: isGone(status, data?.description),
     };
   } catch (error) {
     return {
@@ -100,7 +124,7 @@ export async function setTelegramWebhook(url: string, secretToken: string) {
   return callApi("setWebhook", {
     url,
     secret_token: secretToken,
-    allowed_updates: ["message", "callback_query"],
+    allowed_updates: ["message", "callback_query", "channel_post", "my_chat_member"],
     drop_pending_updates: false,
   });
 }
@@ -138,4 +162,17 @@ export async function editTelegramMessage(
 /** Registers the "/" command menu shown in the bot's chat UI. */
 export async function setTelegramCommands(commands: { command: string; description: string }[]) {
   return callApi("setMyCommands", { commands });
+}
+
+/** True if the user is an owner/admin of the chat (used to guard group commands). */
+export async function isChatAdmin(chatId: string, userId: number): Promise<boolean> {
+  try {
+    const { data } = await callApi<{ status: string }>("getChatMember", {
+      chat_id: chatId,
+      user_id: userId,
+    });
+    return data?.ok === true && ["creator", "administrator"].includes(data.result?.status ?? "");
+  } catch {
+    return false;
+  }
 }
