@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { setTelegramWebhook } from "@/lib/telegram/api";
+import { setTelegramCommands, setTelegramWebhook } from "@/lib/telegram/api";
 import { timingSafeEqualString } from "@/lib/security/crypto";
 
 /**
@@ -27,5 +27,16 @@ export async function GET(request: NextRequest) {
 
   const webhookUrl = `${appUrl}/api/telegram/webhook`;
   const { data } = await setTelegramWebhook(webhookUrl, secret);
-  return NextResponse.json({ webhookUrl, telegram: data });
+  const { data: commands } = await setTelegramCommands([
+    { command: "start", description: "Main menu" },
+    { command: "profile", description: "Your account & overview" },
+    { command: "stats", description: "Event statistics" },
+    { command: "activity", description: "Latest events" },
+    { command: "repos", description: "Monitored repositories" },
+    { command: "notifications", description: "Pause / resume alerts" },
+    { command: "connect", description: "Connect GitHub" },
+    { command: "help", description: "Help & commands" },
+    { command: "stop", description: "Disconnect this chat" },
+  ]);
+  return NextResponse.json({ webhookUrl, telegram: data, commands });
 }
