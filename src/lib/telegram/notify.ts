@@ -22,7 +22,10 @@ export async function notifyUserOfEvent(userId: string, event: TelegramEventInpu
     });
     if (!connection?.chatId) return;
 
-    const result = await sendTelegramMessage(connection.chatId, formatEventMessage(event));
+    const message = formatEventMessage(event);
+    const result = await sendTelegramMessage(connection.chatId, message.text, {
+      replyMarkup: message.buttons.length > 0 ? { inline_keyboard: message.buttons } : undefined,
+    });
 
     if (!result.ok && result.blocked) {
       // User blocked the bot — drop the stale link so we stop trying.
