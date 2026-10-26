@@ -244,7 +244,13 @@ npm run dev
    ```bash
    curl -H "Authorization: Bearer $CRON_SECRET" https://<your-app>/api/telegram/setup
    ```
-۴. در برنامه به **Settings → Telegram** بروید، بارکد را اسکن کنید یا روی **Open in Telegram** بزنید و در ربات **Start** را بزنید. دستورات ربات: `/status` و `/stop`.
+۴. در برنامه به **Settings → Telegram** بروید، بارکد را اسکن کنید یا روی **Open in Telegram** بزنید و در ربات **Start** را بزنید. 
+
+**امکانات ربات**
+- کاربری که هنوز وصل نشده و `/start` می‌زند، توضیح سایت و ربات را می‌بیند و دکمه‌های پایین صفحه: **Profile**، **Connect GitHub**، **How it works** و **Help** را دارد؛ آدرس سایت هم به‌صورت دکمه اینلاین ارسال می‌شود.
+- کاربر متصل: **Profile**، **Statistics** (امروز / ۷ روز / ۳۰ روز)، **Recent activity**، **Repositories**، **Notifications** (توقف/ادامه) و **Help**.
+- پیام‌های رویداد قالب‌بندی منظم و دکمه اینلاین «View on GitHub» دارند.
+- دستورات: `/start /profile /stats /activity /repos /notifications /connect /help /stop`. منوی دستورات با فراخوانی `/api/telegram/setup` ثبت می‌شود.
 
 ## 🔒 امنیت
 

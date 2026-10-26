@@ -252,7 +252,13 @@ Every event GitHub Monitor records (commits, stars, forks, PRs, issues, releases
    ```bash
    curl -H "Authorization: Bearer $CRON_SECRET" https://<your-app>/api/telegram/setup
    ```
-4. In the app, open **Settings → Telegram**, scan the QR code or press **Open in Telegram**, then press **Start** in the bot. Bot commands: `/status`, `/stop`.
+4. In the app, open **Settings → Telegram**, scan the QR code or press **Open in Telegram**, then press **Start** in the bot. 
+
+**Bot features**
+- Guests (not linked) who press `/start` get an introduction plus a bottom menu: **Profile**, **Connect GitHub**, **How it works**, **Help** — with inline buttons that open the website.
+- Linked users get **Profile**, **Statistics** (today / 7d / 30d), **Recent activity**, **Repositories**, **Notifications** (pause/resume) and **Help**.
+- Event messages have a structured layout with inline “View on GitHub” buttons.
+- Commands: `/start /profile /stats /activity /repos /notifications /connect /help /stop`. The command menu is registered by the `/api/telegram/setup` call above.
 
 ## 🔒 Security
 
