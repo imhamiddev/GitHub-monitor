@@ -1,0 +1,164 @@
+-- GitHub Monitor — full database SQL (all migrations, in order).
+-- AUTO-GENERATED from src/drizzle/*.sql — do not edit by hand.
+-- Source of truth: src/lib/db/schema.ts. To apply to a database use `npm run db:migrate`.
+
+-- ===== 0000_groovy_triton =====
+CREATE TABLE "account" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"account_id" text NOT NULL,
+	"provider_id" text NOT NULL,
+	"access_token" text,
+	"refresh_token" text,
+	"access_token_expires_at" timestamp,
+	"refresh_token_expires_at" timestamp,
+	"scope" text,
+	"id_token" text,
+	"password" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "follower_snapshot" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"github_login" text NOT NULL,
+	"captured_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "github_event" (
+	"id" text PRIMARY KEY NOT NULL,
+	"repository_id" text NOT NULL,
+	"github_delivery_id" text NOT NULL,
+	"event_type" text NOT NULL,
+	"action" text,
+	"actor_login" text,
+	"actor_avatar_url" text,
+	"summary" jsonb NOT NULL,
+	"url" text,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "github_installation" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"installation_id" bigint NOT NULL,
+	"github_account_id" bigint NOT NULL,
+	"github_account_login" text NOT NULL,
+	"github_account_type" text NOT NULL,
+	"encrypted_access_token" text,
+	"access_token_expires_at" timestamp,
+	"status" text DEFAULT 'active' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "notification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"event_id" text NOT NULL,
+	"read" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "rate_limit" (
+	"id" text PRIMARY KEY NOT NULL,
+	"key" text NOT NULL,
+	"count" integer DEFAULT 0 NOT NULL,
+	"last_request" bigint NOT NULL
+);
+CREATE TABLE "repository" (
+	"id" text PRIMARY KEY NOT NULL,
+	"installation_id" text NOT NULL,
+	"github_repo_id" bigint NOT NULL,
+	"full_name" text NOT NULL,
+	"name" text NOT NULL,
+	"owner_login" text NOT NULL,
+	"description" text,
+	"private" boolean DEFAULT false NOT NULL,
+	"default_branch" text DEFAULT 'main' NOT NULL,
+	"stars_count" integer DEFAULT 0 NOT NULL,
+	"forks_count" integer DEFAULT 0 NOT NULL,
+	"open_issues_count" integer DEFAULT 0 NOT NULL,
+	"watchers_count" integer DEFAULT 0 NOT NULL,
+	"is_monitored" boolean DEFAULT false NOT NULL,
+	"last_synced_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "repository_event_setting" (
+	"id" text PRIMARY KEY NOT NULL,
+	"repository_id" text NOT NULL,
+	"event_type" text NOT NULL,
+	"enabled" boolean DEFAULT true NOT NULL
+);
+CREATE TABLE "session" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"token" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"ip_address" text,
+	"user_agent" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "session_token_unique" UNIQUE("token")
+);
+CREATE TABLE "user" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text DEFAULT '' NOT NULL,
+	"email" text NOT NULL,
+	"email_verified" boolean DEFAULT false NOT NULL,
+	"image" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "user_email_unique" UNIQUE("email")
+);
+CREATE TABLE "user_settings" (
+	"user_id" text PRIMARY KEY NOT NULL,
+	"notifications_enabled" boolean DEFAULT true NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "verification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+CREATE TABLE "webhook_delivery" (
+	"id" text PRIMARY KEY NOT NULL,
+	"github_delivery_id" text NOT NULL,
+	"event_type" text NOT NULL,
+	"processed_at" timestamp DEFAULT now() NOT NULL,
+	"raw_payload" jsonb
+);
+ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "follower_snapshot" ADD CONSTRAINT "follower_snapshot_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "github_event" ADD CONSTRAINT "github_event_repository_id_repository_id_fk" FOREIGN KEY ("repository_id") REFERENCES "public"."repository"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "github_installation" ADD CONSTRAINT "github_installation_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "notification" ADD CONSTRAINT "notification_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "notification" ADD CONSTRAINT "notification_event_id_github_event_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."github_event"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "repository" ADD CONSTRAINT "repository_installation_id_github_installation_id_fk" FOREIGN KEY ("installation_id") REFERENCES "public"."github_installation"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "repository_event_setting" ADD CONSTRAINT "repository_event_setting_repository_id_repository_id_fk" FOREIGN KEY ("repository_id") REFERENCES "public"."repository"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;CREATE UNIQUE INDEX "follower_snapshot_unique_idx" ON "follower_snapshot" USING btree ("user_id","github_login");CREATE UNIQUE INDEX "github_event_delivery_id_idx" ON "github_event" USING btree ("github_delivery_id");CREATE INDEX "github_event_repository_id_idx" ON "github_event" USING btree ("repository_id");CREATE INDEX "github_event_created_at_idx" ON "github_event" USING btree ("created_at");CREATE UNIQUE INDEX "github_installation_installation_id_idx" ON "github_installation" USING btree ("installation_id");CREATE INDEX "github_installation_user_id_idx" ON "github_installation" USING btree ("user_id");CREATE INDEX "notification_user_id_idx" ON "notification" USING btree ("user_id");CREATE INDEX "notification_user_read_idx" ON "notification" USING btree ("user_id","read");CREATE UNIQUE INDEX "repository_github_repo_id_idx" ON "repository" USING btree ("github_repo_id");CREATE INDEX "repository_installation_id_idx" ON "repository" USING btree ("installation_id");CREATE UNIQUE INDEX "repo_event_setting_unique_idx" ON "repository_event_setting" USING btree ("repository_id","event_type");CREATE UNIQUE INDEX "webhook_delivery_delivery_id_idx" ON "webhook_delivery" USING btree ("github_delivery_id");
+
+-- ===== 0001_left_carnage =====
+DROP TABLE "notification" CASCADE;DROP TABLE "user_settings" CASCADE;
+
+-- ===== 0002_greedy_toad =====
+CREATE TABLE "user_onboarding" (
+	"user_id" text PRIMARY KEY NOT NULL,
+	"completed_at" timestamp DEFAULT now() NOT NULL
+);
+ALTER TABLE "user_onboarding" ADD CONSTRAINT "user_onboarding_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+
+-- ===== 0003_backfill_user_onboarding =====
+-- Backfill: mark all pre-existing users as already onboarded, so this
+-- feature doesn't retroactively force the setup wizard on accounts
+-- created before it existed.
+INSERT INTO "user_onboarding" ("user_id", "completed_at")
+SELECT "id", now() FROM "user"
+ON CONFLICT ("user_id") DO NOTHING;
+
+-- ===== 0004_telegram_connection =====
+CREATE TABLE "telegram_connection" (
+	"user_id" text PRIMARY KEY NOT NULL,
+	"link_token_hash" text,
+	"link_token_expires_at" timestamp,
+	"chat_id" text,
+	"telegram_username" text,
+	"telegram_first_name" text,
+	"notifications_enabled" boolean DEFAULT true NOT NULL,
+	"connected_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+ALTER TABLE "telegram_connection" ADD CONSTRAINT "telegram_connection_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;CREATE UNIQUE INDEX "telegram_connection_link_token_idx" ON "telegram_connection" USING btree ("link_token_hash");CREATE UNIQUE INDEX "telegram_connection_chat_id_idx" ON "telegram_connection" USING btree ("chat_id");
