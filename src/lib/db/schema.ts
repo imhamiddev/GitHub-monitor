@@ -241,6 +241,36 @@ export const userOnboarding = pgTable("user_onboarding", {
 });
 
 /* ------------------------------------------------------------------ */
+/*  Telegram bot connection — one row per user. A row is created when */
+/*  the user generates a link; chatId stays null until they open the  */
+/*  bot via the deep link and the bot webhook confirms the token.     */
+/* ------------------------------------------------------------------ */
+
+export const telegramConnection = pgTable(
+  "telegram_connection",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // SHA-256 of the one-time deep-link token (never store it raw).
+    linkTokenHash: text("link_token_hash"),
+    linkTokenExpiresAt: timestamp("link_token_expires_at"),
+    // Telegram private-chat id; null while the link is still pending.
+    chatId: text("chat_id"),
+    telegramUsername: text("telegram_username"),
+    telegramFirstName: text("telegram_first_name"),
+    notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+    connectedAt: timestamp("connected_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("telegram_connection_link_token_idx").on(t.linkTokenHash),
+    uniqueIndex("telegram_connection_chat_id_idx").on(t.chatId),
+  ]
+);
+
+/* ------------------------------------------------------------------ */
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 
