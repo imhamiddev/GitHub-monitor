@@ -89,7 +89,7 @@ export default async function StatisticsPage({
         customTo={toParam ? new Date(`${toParam}T00:00:00.000Z`) : undefined}
       />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <StatCard label="Commits" value={stats.commits} icon={GitBranchIcon} />
         <StatCard label="Stars" value={stats.stars} icon={StarIcon} />
         <StatCard label="Forks" value={stats.forks} icon={GitForkIcon} />

@@ -30,7 +30,7 @@ export default function DemoDashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
           label="Repositories"
           value={DEMO_STATS.repositoriesCount}
