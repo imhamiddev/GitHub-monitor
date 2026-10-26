@@ -271,6 +271,74 @@ export const telegramConnection = pgTable(
 );
 
 /* ------------------------------------------------------------------ */
+/*  Telegram extras                                                   */
+/* ------------------------------------------------------------------ */
+
+// Per-chat bot preferences (private chats, groups and guests alike).
+export const telegramChatPref = pgTable("telegram_chat_pref", {
+  chatId: text("chat_id").primaryKey(),
+  language: text("language").notNull().default("en"), // "en" | "fa"
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Extra destinations (groups / channels) a user wants notifications in.
+export const telegramGroup = pgTable(
+  "telegram_group",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    chatId: text("chat_id").notNull(),
+    chatType: text("chat_type").notNull(), // group | supergroup | channel
+    title: text("title"),
+    enabled: boolean("enabled").notNull().default(true),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("telegram_group_chat_id_idx").on(t.chatId),
+    index("telegram_group_user_id_idx").on(t.userId),
+  ]
+);
+
+// Milestones already celebrated (e.g. "stars:owner/repo:100") so each
+// one is announced only once.
+export const telegramMilestone = pgTable(
+  "telegram_milestone",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    reachedAt: timestamp("reached_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("telegram_milestone_user_key_idx").on(t.userId, t.key)]
+);
+
+// Short-lived queue used to merge bursts of events into one message.
+// Rows are claimed atomically (claimed_at) by whichever invocation
+// flushes first, and purged after a day.
+export const telegramOutbox = pgTable(
+  "telegram_outbox",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    repositoryName: text("repository_name"),
+    eventType: text("event_type").notNull(),
+    action: text("action"),
+    actorLogin: text("actor_login"),
+    summary: jsonb("summary").$type<Record<string, unknown>>().notNull(),
+    url: text("url"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    claimedAt: timestamp("claimed_at"),
+  },
+  (t) => [index("telegram_outbox_user_claimed_idx").on(t.userId, t.claimedAt)]
+);
+
+/* ------------------------------------------------------------------ */
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 

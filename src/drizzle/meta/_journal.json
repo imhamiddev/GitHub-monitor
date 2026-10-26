@@ -36,6 +36,13 @@
       "when": 1793048688460,
       "tag": "0004_telegram_connection",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793051159034,
+      "tag": "0005_telegram_groups_prefs_outbox",
+      "breakpoints": true
     }
   ]
 }
