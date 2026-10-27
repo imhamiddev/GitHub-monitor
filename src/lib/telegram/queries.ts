@@ -1,7 +1,14 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { githubInstallation, repository, telegramConnection, user } from "@/lib/db/schema";
+import {
+  githubEvent,
+  githubInstallation,
+  repository,
+  telegramConnection,
+  telegramGroup,
+  user,
+} from "@/lib/db/schema";
 
 export type Member = {
   userId: string;
@@ -65,4 +72,49 @@ export async function getMonitoredRepos(userId: string, limit = 15): Promise<Mon
     .where(and(eq(githubInstallation.userId, userId), eq(repository.isMonitored, true)))
     .orderBy(desc(repository.starsCount))
     .limit(limit);
+}
+
+export type TopRepo = { fullName: string; events: number };
+export type TopActor = { login: string; events: number };
+
+/** Leaderboard data for /top: starred repos + 7-day activity ranking. */
+export async function getTopData(userId: string) {
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const owned = eq(githubInstallation.userId, userId);
+
+  const starred = await getMonitoredRepos(userId, 5);
+
+  const activeRepos = await db
+    .select({ fullName: repository.fullName, events: sql<number>`count(*)::int` })
+    .from(githubEvent)
+    .innerJoin(repository, eq(repository.id, githubEvent.repositoryId))
+    .innerJoin(githubInstallation, eq(githubInstallation.id, repository.installationId))
+    .where(and(owned, gte(githubEvent.createdAt, since)))
+    .groupBy(repository.fullName)
+    .orderBy(desc(sql`count(*)`))
+    .limit(5);
+
+  const actors = await db
+    .select({ login: githubEvent.actorLogin, events: sql<number>`count(*)::int` })
+    .from(githubEvent)
+    .innerJoin(repository, eq(repository.id, githubEvent.repositoryId))
+    .innerJoin(githubInstallation, eq(githubInstallation.id, repository.installationId))
+    .where(and(owned, gte(githubEvent.createdAt, since), isNotNull(githubEvent.actorLogin)))
+    .groupBy(githubEvent.actorLogin)
+    .orderBy(desc(sql`count(*)`))
+    .limit(5);
+
+  return {
+    starred,
+    activeRepos,
+    actors: actors.filter((a): a is TopActor => a.login !== null),
+  };
+}
+
+export async function countGroups(userId: string): Promise<number> {
+  const rows = await db
+    .select({ id: telegramGroup.id })
+    .from(telegramGroup)
+    .where(eq(telegramGroup.userId, userId));
+  return rows.length;
 }
