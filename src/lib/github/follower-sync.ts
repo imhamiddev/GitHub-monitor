@@ -9,7 +9,7 @@ import {
   repository,
 } from "@/lib/db/schema";
 import { getInstallationOctokit } from "@/lib/github/app";
-import { notifyUserOfEvent } from "@/lib/telegram/notify";
+import { enqueueEventNotification, flushUserOutbox } from "@/lib/telegram/notify";
 
 export type FollowerSyncResult = {
   userId: string;
@@ -135,7 +135,7 @@ async function recordFollowerEvents(params: {
       url: `https://github.com/${login}`,
     });
 
-    await notifyUserOfEvent(userId, {
+    await enqueueEventNotification(userId, {
       repositoryName: null,
       eventType: "follower",
       action,
@@ -151,6 +151,10 @@ async function recordFollowerEvents(params: {
   for (const login of params.unfollowed) {
     await insertFollowerEvent(login, "unfollowed");
   }
+
+  // One flush for the whole sync: a wave of new followers becomes a single
+  // summary message instead of one message per follower.
+  await flushUserOutbox(userId);
 }
 
 export async function getAllActiveInstallationsForFollowerSync() {
