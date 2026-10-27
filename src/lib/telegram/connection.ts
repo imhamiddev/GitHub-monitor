@@ -1,8 +1,8 @@
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes, randomUUID } from "crypto";
 import { and, eq, gt } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { telegramConnection } from "@/lib/db/schema";
+import { telegramConnection, telegramGroup } from "@/lib/db/schema";
 
 export const LINK_TOKEN_TTL_MS = 15 * 60 * 1000;
 
@@ -93,5 +93,77 @@ export async function unlinkByChatId(chatId: string): Promise<boolean> {
     .delete(telegramConnection)
     .where(eq(telegramConnection.chatId, chatId))
     .returning({ userId: telegramConnection.userId });
+  return deleted.length > 0;
+}
+
+/* ------------------------------ groups / channels ------------------------------ */
+
+export type CompleteGroupResult =
+  | { ok: true }
+  | { ok: false; reason: "invalid" | "chat_in_use" };
+
+/**
+ * Links a group/supergroup/channel to the account that generated `token`.
+ * The same one-time token mechanism as private chats is used; the token is
+ * consumed on success.
+ */
+export async function completeGroupLink(
+  token: string,
+  chat: { chatId: string; type: string; title: string | null }
+): Promise<CompleteGroupResult> {
+  const row = await db.query.telegramConnection.findFirst({
+    where: and(
+      eq(telegramConnection.linkTokenHash, hashToken(token)),
+      gt(telegramConnection.linkTokenExpiresAt, new Date())
+    ),
+  });
+  if (!row) return { ok: false, reason: "invalid" };
+
+  const existing = await db.query.telegramGroup.findFirst({
+    where: eq(telegramGroup.chatId, chat.chatId),
+  });
+  if (existing && existing.userId !== row.userId) return { ok: false, reason: "chat_in_use" };
+
+  if (existing) {
+    await db
+      .update(telegramGroup)
+      .set({ title: chat.title, chatType: chat.type, enabled: true })
+      .where(eq(telegramGroup.id, existing.id));
+  } else {
+    await db.insert(telegramGroup).values({
+      id: randomUUID(),
+      userId: row.userId,
+      chatId: chat.chatId,
+      chatType: chat.type,
+      title: chat.title,
+    });
+  }
+
+  await db
+    .update(telegramConnection)
+    .set({ linkTokenHash: null, linkTokenExpiresAt: null, updatedAt: new Date() })
+    .where(eq(telegramConnection.userId, row.userId));
+
+  return { ok: true };
+}
+
+export async function listGroups(userId: string) {
+  return db.query.telegramGroup.findMany({
+    where: eq(telegramGroup.userId, userId),
+    orderBy: (g, { asc }) => asc(g.createdAt),
+  });
+}
+
+export async function removeGroup(userId: string, groupId: string) {
+  await db
+    .delete(telegramGroup)
+    .where(and(eq(telegramGroup.id, groupId), eq(telegramGroup.userId, userId)));
+}
+
+export async function removeGroupByChatId(chatId: string): Promise<boolean> {
+  const deleted = await db
+    .delete(telegramGroup)
+    .where(eq(telegramGroup.chatId, chatId))
+    .returning({ id: telegramGroup.id });
   return deleted.length > 0;
 }
