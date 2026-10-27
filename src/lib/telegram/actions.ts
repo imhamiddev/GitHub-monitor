@@ -10,7 +10,14 @@ import { getServerSession } from "@/lib/auth/session";
 import { buildBotLink, isTelegramConfigured, sendTelegramMessage } from "@/lib/telegram/api";
 import { guestKeyboard } from "@/lib/telegram/keyboards";
 import { resolveLang } from "@/lib/telegram/prefs";
-import { createLinkToken, getTelegramConnection, unlinkByUserId } from "@/lib/telegram/connection";
+import {
+  createLinkToken,
+  getTelegramConnection,
+  listGroups,
+  removeGroup,
+  unlinkByUserId,
+} from "@/lib/telegram/connection";
+import { getBotUsername } from "@/lib/telegram/api";
 
 type ActionResult<T = object> = ({ success: true } & T) | { success: false; error: string };
 
@@ -90,4 +97,42 @@ export async function getTelegramStatus(): Promise<{ connected: boolean }> {
   if (!userId) return { connected: false };
   const connection = await getTelegramConnection(userId);
   return { connected: Boolean(connection?.chatId) };
+}
+
+/**
+ * One-time token for adding the bot to a group (deep link that opens the
+ * group picker) or a channel (admin posts the `/link <token>` command).
+ */
+export async function generateTelegramGroupLink(): Promise<
+  ActionResult<{ groupLink: string; channelCommand: string; expiresAt: string }>
+> {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+  if (!isTelegramConfigured()) {
+    return { success: false, error: "Telegram bot is not configured on this server." };
+  }
+
+  const { token, expiresAt } = await createLinkToken(userId);
+  return {
+    success: true,
+    groupLink: `https://t.me/${getBotUsername()}?startgroup=${encodeURIComponent(token)}`,
+    channelCommand: `/link ${token}`,
+    expiresAt: expiresAt.toISOString(),
+  };
+}
+
+export async function removeTelegramGroup(groupId: string): Promise<ActionResult> {
+  const userId = await requireUserId();
+  if (!userId) return { success: false, error: "Not authenticated." };
+
+  await removeGroup(userId, groupId);
+  revalidatePath("/settings/telegram");
+  return { success: true };
+}
+
+/** Lets the settings card detect a newly linked group while it waits. */
+export async function getTelegramGroupCount(): Promise<number> {
+  const userId = await requireUserId();
+  if (!userId) return 0;
+  return (await listGroups(userId)).length;
 }
