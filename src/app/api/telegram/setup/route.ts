@@ -33,6 +33,8 @@ export async function GET(request: NextRequest) {
     { command: "stats", description: "Event statistics" },
     { command: "activity", description: "Latest events" },
     { command: "repos", description: "Monitored repositories" },
+    { command: "top", description: "Weekly leaderboard" },
+    { command: "language", description: "Language / زبان" },
     { command: "notifications", description: "Pause / resume alerts" },
     { command: "connect", description: "Connect GitHub" },
     { command: "help", description: "Help & commands" },
