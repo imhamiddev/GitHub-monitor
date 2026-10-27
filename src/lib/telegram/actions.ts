@@ -9,6 +9,7 @@ import { telegramConnection } from "@/lib/db/schema";
 import { getServerSession } from "@/lib/auth/session";
 import { buildBotLink, isTelegramConfigured, sendTelegramMessage } from "@/lib/telegram/api";
 import { guestKeyboard } from "@/lib/telegram/keyboards";
+import { resolveLang } from "@/lib/telegram/prefs";
 import { createLinkToken, getTelegramConnection, unlinkByUserId } from "@/lib/telegram/connection";
 
 type ActionResult<T = object> = ({ success: true } & T) | { success: false; error: string };
@@ -47,7 +48,7 @@ export async function disconnectTelegram(): Promise<ActionResult> {
     await sendTelegramMessage(
       connection.chatId,
       "🔌 <b>Disconnected</b>\nThis chat was unlinked from your GitHub Monitor account. You will no longer receive notifications.\n\nSend /start to set things up again.",
-      { replyMarkup: guestKeyboard() }
+      { replyMarkup: guestKeyboard(await resolveLang(connection.chatId, null)) }
     );
   }
   await unlinkByUserId(userId);
