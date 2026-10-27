@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getAllActiveInstallationsForFollowerSync, syncFollowersForInstallation } from "@/lib/github/follower-sync";
 import { timingSafeEqualString } from "@/lib/security/crypto";
+import { alertUnreachableOncePerDay } from "@/lib/telegram/health";
 
 export const maxDuration = 300; // allow up to 5 minutes for larger user bases
 
@@ -53,6 +54,7 @@ export async function GET(request: NextRequest) {
         totalUnfollowed += result.unfollowed.length;
       } else {
         failed += 1;
+        await alertUnreachableOncePerDay(installation.userId).catch(() => undefined);
       }
     } catch (error) {
       failed += 1;
