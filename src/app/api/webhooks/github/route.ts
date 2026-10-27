@@ -15,6 +15,8 @@ import { getUserIdForInstallation } from "@/lib/github/installations";
 import { notifyUserOfEvent } from "@/lib/telegram/notify";
 
 export const runtime = "nodejs";
+// after() waits one batching window (~3s) before sending Telegram messages.
+export const maxDuration = 30;
 
 /**
  * GitHub retries webhook deliveries on failure/timeout, and in rare
