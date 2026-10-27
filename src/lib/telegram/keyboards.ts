@@ -1,98 +1,93 @@
 import type { InlineButton, ReplyKeyboard } from "@/lib/telegram/api";
+import { t, type Lang, type MessageKey } from "@/lib/telegram/i18n";
 
 export function getSiteUrl(): string {
   return (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
 }
 
-/** Labels of the persistent (bottom) keyboard — also used to route taps. */
-export const BTN = {
-  profile: "👤 Profile",
-  connectGithub: "🔗 Connect GitHub",
-  howItWorks: "ℹ️ How it works",
-  stats: "📊 Statistics",
-  activity: "🕒 Recent activity",
-  repos: "📁 Repositories",
-  notifications: "🔔 Notifications",
-  help: "❓ Help",
+export const CB = {
+  toggleNotifications: "notif:toggle",
+  statsRange: (range: "today" | "7d" | "30d") => `stats:${range}`,
+  setLang: (lang: Lang) => `lang:${lang}`,
 } as const;
 
-export type ButtonLabel = (typeof BTN)[keyof typeof BTN];
+const btn = (lang: Lang, key: MessageKey, style: "primary" | "success" | "danger" = "primary") => ({
+  text: t(lang, key),
+  style,
+});
 
 /** Bottom keyboard for users who haven't linked their account yet. */
-export function guestKeyboard(): ReplyKeyboard {
+export function guestKeyboard(lang: Lang): ReplyKeyboard {
   return {
     keyboard: [
-      [
-        { text: BTN.profile, style: "primary" },
-        { text: BTN.connectGithub, style: "success" },
-      ],
-      [
-        { text: BTN.howItWorks, style: "primary" },
-        { text: BTN.help, style: "primary" },
-      ],
+      [btn(lang, "btn.profile"), btn(lang, "btn.connect", "success")],
+      [btn(lang, "btn.how"), btn(lang, "btn.language")],
+      [btn(lang, "btn.help")],
     ],
     resize_keyboard: true,
     is_persistent: true,
-    input_field_placeholder: "Choose an option…",
+    input_field_placeholder: t(lang, "placeholder"),
   };
 }
 
 /** Bottom keyboard for linked users. */
-export function memberKeyboard(): ReplyKeyboard {
+export function memberKeyboard(lang: Lang): ReplyKeyboard {
   return {
     keyboard: [
-      [
-        { text: BTN.profile, style: "primary" },
-        { text: BTN.stats, style: "success" },
-      ],
-      [
-        { text: BTN.activity, style: "primary" },
-        { text: BTN.repos, style: "primary" },
-      ],
-      [
-        { text: BTN.notifications, style: "success" },
-        { text: BTN.help, style: "primary" },
-      ],
+      [btn(lang, "btn.profile"), btn(lang, "btn.stats", "success")],
+      [btn(lang, "btn.activity"), btn(lang, "btn.top")],
+      [btn(lang, "btn.repos"), btn(lang, "btn.notifications", "success")],
+      [btn(lang, "btn.language"), btn(lang, "btn.help")],
     ],
     resize_keyboard: true,
     is_persistent: true,
-    input_field_placeholder: "Choose an option…",
+    input_field_placeholder: t(lang, "placeholder"),
   };
 }
 
-export const CB = {
-  toggleNotifications: "notif:toggle",
-  refreshStats: "stats:refresh",
-  statsRange: (range: "today" | "7d" | "30d") => `stats:${range}`,
-} as const;
-
-export function websiteButtons(): InlineButton[][] {
-  const site = getSiteUrl();
-  return [[{ text: "🌐 Open website", url: site, style: "primary" }]];
+export function websiteButtons(lang: Lang): InlineButton[][] {
+  return [[{ text: t(lang, "ib.openSite"), url: getSiteUrl(), style: "primary" }]];
 }
 
-export function connectGithubButtons(): InlineButton[][] {
+export function connectGithubButtons(lang: Lang): InlineButton[][] {
   const site = getSiteUrl();
   return [
-    [{ text: "🔗 Connect GitHub on the website", url: `${site}/settings/github`, style: "success" }],
-    [{ text: "🌐 Open website", url: site, style: "primary" }],
+    [{ text: t(lang, "ib.connectGithub"), url: `${site}/settings/github`, style: "success" }],
+    [{ text: t(lang, "ib.openSite"), url: site, style: "primary" }],
   ];
 }
 
-export function connectTelegramButtons(): InlineButton[][] {
+export function connectTelegramButtons(lang: Lang): InlineButton[][] {
   const site = getSiteUrl();
   return [
-    [{ text: "🔐 Sign in / Create account", url: `${site}/login`, style: "success" }],
-    [{ text: "🤖 Link this chat", url: `${site}/settings/telegram`, style: "primary" }],
+    [{ text: t(lang, "ib.signIn"), url: `${site}/login`, style: "success" }],
+    [{ text: t(lang, "ib.linkChat"), url: `${site}/settings/telegram`, style: "primary" }],
   ];
 }
 
-export function dashboardButtons(): InlineButton[][] {
+export function dashboardButtons(lang: Lang): InlineButton[][] {
   const site = getSiteUrl();
   return [
     [
-      { text: "📊 Dashboard", url: `${site}/dashboard`, style: "primary" },
-      { text: "⚙️ Settings", url: `${site}/settings/telegram`, style: "primary" },
+      { text: t(lang, "ib.dashboard"), url: `${site}/dashboard`, style: "primary" },
+      { text: t(lang, "ib.settings"), url: `${site}/settings/telegram`, style: "primary" },
+    ],
+  ];
+}
+
+export function activityButtons(lang: Lang): InlineButton[][] {
+  return [[{ text: t(lang, "ib.openActivity"), url: `${getSiteUrl()}/activity`, style: "primary" }]];
+}
+
+export function fixConnectionButtons(lang: Lang): InlineButton[][] {
+  return [[{ text: t(lang, "ib.fixConnection"), url: `${getSiteUrl()}/settings/github`, style: "danger" }]];
+}
+
+export function languageButtons(): InlineButton[][] {
+  return [
+    [
+      { text: "🇬🇧 English", callback_data: CB.setLang("en"), style: "primary" },
+      { text: "🇮🇷 فارسی", callback_data: CB.setLang("fa"), style: "primary" },
     ],
   ];
 }
