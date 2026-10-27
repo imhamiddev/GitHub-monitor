@@ -4,64 +4,79 @@ import { getStatistics } from "@/lib/statistics/counts";
 import {
   answerCallbackQuery,
   editTelegramMessage,
+  isChatAdmin,
   sendTelegramMessage,
   type InlineButton,
 } from "@/lib/telegram/api";
-import { completeLink, unlinkByChatId } from "@/lib/telegram/connection";
 import {
-  BTN,
+  completeGroupLink,
+  completeLink,
+  removeGroupByChatId,
+  unlinkByChatId,
+} from "@/lib/telegram/connection";
+import { LANGS, matchButton, t, type Lang } from "@/lib/telegram/i18n";
+import {
+  activityButtons,
   CB,
   connectGithubButtons,
   connectTelegramButtons,
   dashboardButtons,
   guestKeyboard,
+  languageButtons,
   memberKeyboard,
   websiteButtons,
 } from "@/lib/telegram/keyboards";
 import * as msg from "@/lib/telegram/messages";
-import { getMemberByChatId, getMonitoredRepos, setNotificationsByChatId } from "@/lib/telegram/queries";
+import { resolveLang, setChatLanguage } from "@/lib/telegram/prefs";
+import {
+  countGroups,
+  getMemberByChatId,
+  getMonitoredRepos,
+  getTopData,
+  setNotificationsByChatId,
+} from "@/lib/telegram/queries";
+
+type From = { id?: number; username?: string; first_name?: string; language_code?: string };
+type Chat = { id: number; type: string; title?: string };
 
 export type TelegramUpdate = {
-  message?: {
-    text?: string;
-    chat: { id: number; type: string };
-    from?: { username?: string; first_name?: string };
-  };
+  message?: { text?: string; chat: Chat; from?: From };
+  channel_post?: { text?: string; chat: Chat };
   callback_query?: {
     id: string;
     data?: string;
-    from: { first_name?: string };
-    message?: { message_id: number; chat: { id: number; type: string } };
+    from: From;
+    message?: { message_id: number; chat: Chat };
   };
 };
 
-type StatsRange = "today" | "7d" | "30d";
+type StatsRange = msg.StatsRange;
 
 function startOfTodayUtc(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 }
 
-function statsKeyboard(active: StatsRange): { inline_keyboard: InlineButton[][] } {
-  const label = (r: StatsRange, text: string): InlineButton => ({
-    text: r === active ? `• ${text} •` : text,
+function statsKeyboard(lang: Lang, active: StatsRange): { inline_keyboard: InlineButton[][] } {
+  const label = (r: StatsRange, key: "ib.today" | "ib.d7" | "ib.d30"): InlineButton => ({
+    text: r === active ? `• ${t(lang, key)} •` : t(lang, key),
     callback_data: CB.statsRange(r),
     style: r === active ? "success" : "primary",
   });
   return {
     inline_keyboard: [
-      [label("today", "Today"), label("7d", "7 days"), label("30d", "30 days")],
-      ...dashboardButtons(),
+      [label("today", "ib.today"), label("7d", "ib.d7"), label("30d", "ib.d30")],
+      ...dashboardButtons(lang),
     ],
   };
 }
 
-function notificationsKeyboard(enabled: boolean) {
+function notificationsKeyboard(lang: Lang, enabled: boolean) {
   return {
     inline_keyboard: [
       [
         {
-          text: enabled ? "⏸ Pause notifications" : "▶️ Resume notifications",
+          text: t(lang, enabled ? "ib.pause" : "ib.resume"),
           callback_data: CB.toggleNotifications,
           // Red = destructive action (pause), green = turn back on.
           style: enabled ? "danger" : "success",
@@ -71,109 +86,114 @@ function notificationsKeyboard(enabled: boolean) {
   };
 }
 
-async function buildStats(userId: string, range: StatsRange) {
+async function buildStats(lang: Lang, userId: string, range: StatsRange) {
   const from = range === "today" ? startOfTodayUtc() : subDays(new Date(), range === "7d" ? 7 : 30);
-  return msg.statsMessage(range, await getStatistics(userId, from));
+  return msg.statsMessage(lang, range, await getStatistics(userId, from));
 }
 
-/* ------------------------------ screens ---------------------------------- */
+const send = sendTelegramMessage;
 
-async function showStart(chatId: string, firstName?: string | null) {
+/* ------------------------------ private-chat screens ---------------------------------- */
+
+async function showStart(chatId: string, lang: Lang, firstName?: string | null) {
   const member = await getMemberByChatId(chatId);
   if (member) {
-    await sendTelegramMessage(chatId, msg.memberWelcome(member), {
-      replyMarkup: memberKeyboard(),
-    });
-    await sendTelegramMessage(chatId, "Quick links 👇", {
-      replyMarkup: { inline_keyboard: dashboardButtons() },
+    await send(chatId, msg.memberWelcome(lang, member), { replyMarkup: memberKeyboard(lang) });
+    await send(chatId, t(lang, "quick"), {
+      replyMarkup: { inline_keyboard: dashboardButtons(lang) },
       silent: true,
     });
     return;
   }
-  await sendTelegramMessage(chatId, msg.guestWelcome(firstName), {
-    replyMarkup: guestKeyboard(),
-  });
-  await sendTelegramMessage(chatId, "🌐 Get started on the website:", {
-    replyMarkup: { inline_keyboard: connectTelegramButtons() },
+  await send(chatId, msg.guestWelcome(lang, firstName), { replyMarkup: guestKeyboard(lang) });
+  await send(chatId, t(lang, "guest.webPrompt"), {
+    replyMarkup: { inline_keyboard: connectTelegramButtons(lang) },
     silent: true,
   });
 }
 
-async function showProfile(chatId: string) {
+async function showProfile(chatId: string, lang: Lang) {
   const member = await getMemberByChatId(chatId);
   if (!member) {
-    await sendTelegramMessage(chatId, msg.guestProfile(), {
-      replyMarkup: { inline_keyboard: connectTelegramButtons() },
+    await send(chatId, msg.guestProfile(lang), {
+      replyMarkup: { inline_keyboard: connectTelegramButtons(lang) },
     });
     return;
   }
-  const stats = await getDashboardStats(member.userId);
-  await sendTelegramMessage(chatId, msg.memberProfile(member, stats), {
-    replyMarkup: { inline_keyboard: dashboardButtons() },
+  const [stats, groups] = await Promise.all([
+    getDashboardStats(member.userId),
+    countGroups(member.userId),
+  ]);
+  await send(chatId, msg.memberProfile(lang, member, stats, groups), {
+    replyMarkup: { inline_keyboard: dashboardButtons(lang) },
   });
 }
 
-async function showConnectGithub(chatId: string) {
-  await sendTelegramMessage(chatId, msg.connectGithubMessage(), {
-    replyMarkup: { inline_keyboard: connectGithubButtons() },
-  });
-}
-
-async function requireMember(chatId: string) {
+async function requireMember(chatId: string, lang: Lang) {
   const member = await getMemberByChatId(chatId);
   if (!member) {
-    await sendTelegramMessage(chatId, msg.NOT_CONNECTED_HINT, {
-      replyMarkup: { inline_keyboard: connectTelegramButtons() },
+    await send(chatId, t(lang, "need.member"), {
+      replyMarkup: { inline_keyboard: connectTelegramButtons(lang) },
     });
   }
   return member;
 }
 
-async function showStats(chatId: string) {
-  const member = await requireMember(chatId);
+async function showStats(chatId: string, lang: Lang) {
+  const member = await requireMember(chatId, lang);
   if (!member) return;
-  await sendTelegramMessage(chatId, await buildStats(member.userId, "today"), {
-    replyMarkup: statsKeyboard("today"),
+  await send(chatId, await buildStats(lang, member.userId, "today"), {
+    replyMarkup: statsKeyboard(lang, "today"),
   });
 }
 
-async function showActivity(chatId: string) {
-  const member = await requireMember(chatId);
+async function showActivity(chatId: string, lang: Lang) {
+  const member = await requireMember(chatId, lang);
   if (!member) return;
   const items = await getRecentActivity(member.userId, 8);
-  await sendTelegramMessage(chatId, msg.activityMessage(items), {
-    replyMarkup: { inline_keyboard: dashboardButtons() },
+  await send(chatId, msg.activityMessage(lang, items), {
+    replyMarkup: { inline_keyboard: activityButtons(lang) },
   });
 }
 
-async function showRepos(chatId: string) {
-  const member = await requireMember(chatId);
+async function showRepos(chatId: string, lang: Lang) {
+  const member = await requireMember(chatId, lang);
   if (!member) return;
-  await sendTelegramMessage(chatId, msg.reposMessage(await getMonitoredRepos(member.userId)), {
-    replyMarkup: { inline_keyboard: dashboardButtons() },
+  await send(chatId, msg.reposMessage(lang, await getMonitoredRepos(member.userId)), {
+    replyMarkup: { inline_keyboard: dashboardButtons(lang) },
   });
 }
 
-async function showNotifications(chatId: string) {
-  const member = await requireMember(chatId);
+async function showTop(chatId: string, lang: Lang) {
+  const member = await requireMember(chatId, lang);
   if (!member) return;
-  await sendTelegramMessage(chatId, msg.notificationsMessage(member.notificationsEnabled), {
-    replyMarkup: notificationsKeyboard(member.notificationsEnabled),
+  await send(chatId, msg.topMessage(lang, await getTopData(member.userId)), {
+    replyMarkup: { inline_keyboard: activityButtons(lang) },
   });
 }
 
-async function showHelp(chatId: string) {
+async function showNotifications(chatId: string, lang: Lang) {
+  const member = await requireMember(chatId, lang);
+  if (!member) return;
+  await send(chatId, msg.notificationsMessage(lang, member.notificationsEnabled), {
+    replyMarkup: notificationsKeyboard(lang, member.notificationsEnabled),
+  });
+}
+
+async function showHelp(chatId: string, lang: Lang) {
   const member = await getMemberByChatId(chatId);
-  await sendTelegramMessage(chatId, msg.helpMessage(Boolean(member)), {
-    replyMarkup: { inline_keyboard: websiteButtons() },
+  await send(chatId, msg.helpMessage(lang, Boolean(member)), {
+    replyMarkup: { inline_keyboard: websiteButtons(lang) },
   });
 }
 
-async function handleStartWithToken(
-  chatId: string,
-  token: string,
-  from?: { username?: string; first_name?: string }
-) {
+async function showLanguage(chatId: string, lang: Lang) {
+  await send(chatId, msg.languageMessage(lang), {
+    replyMarkup: { inline_keyboard: languageButtons() },
+  });
+}
+
+async function handleStartWithToken(chatId: string, token: string, lang: Lang, from?: From) {
   const result = await completeLink(token, {
     chatId,
     username: from?.username ?? null,
@@ -181,72 +201,127 @@ async function handleStartWithToken(
   });
 
   if (result.ok) {
-    await sendTelegramMessage(chatId, msg.linkedSuccess(from?.first_name), {
-      replyMarkup: memberKeyboard(),
+    await send(chatId, msg.linkedSuccess(lang, from?.first_name), {
+      replyMarkup: memberKeyboard(lang),
     });
-    await sendTelegramMessage(chatId, "Quick links 👇", {
-      replyMarkup: { inline_keyboard: dashboardButtons() },
+    await send(chatId, t(lang, "quick"), {
+      replyMarkup: { inline_keyboard: dashboardButtons(lang) },
       silent: true,
     });
   } else if (result.reason === "chat_in_use") {
-    await sendTelegramMessage(
-      chatId,
-      "⚠️ This Telegram account is already linked to another GitHub Monitor user. Send /stop first, then try again."
-    );
+    await send(chatId, t(lang, "err.inUse"));
   } else {
-    await sendTelegramMessage(
-      chatId,
-      "❌ This link is invalid or has expired. Generate a new one from <b>Settings → Telegram</b>.",
-      { replyMarkup: { inline_keyboard: connectTelegramButtons() } }
-    );
+    await send(chatId, t(lang, "err.badLink"), {
+      replyMarkup: { inline_keyboard: connectTelegramButtons(lang) },
+    });
   }
 }
 
-async function handleStop(chatId: string) {
+async function handleStop(chatId: string, lang: Lang) {
   const removed = await unlinkByChatId(chatId);
-  await sendTelegramMessage(
+  await send(chatId, t(lang, removed ? "stop.done" : "stop.none"), {
+    replyMarkup: guestKeyboard(lang),
+  });
+}
+
+/* ------------------------------ groups & channels ---------------------------------- */
+
+async function handleGroupMessage(
+  message: NonNullable<TelegramUpdate["message"]>,
+  command: string | null,
+  arg: string | undefined
+) {
+  const chatId = String(message.chat.id);
+  const lang = await resolveLang(chatId, message.from?.language_code);
+
+  if (command === "/start" && arg) {
+    const result = await completeGroupLink(arg, {
+      chatId,
+      type: message.chat.type,
+      title: message.chat.title ?? null,
+    });
+    await send(chatId, t(lang, result.ok ? "group.linked" : "group.badLink"));
+    return;
+  }
+
+  if (command === "/stop" || command === "/status") {
+    const admin = message.from?.id ? await isChatAdmin(chatId, message.from.id) : false;
+    if (!admin) {
+      await send(chatId, t(lang, "group.adminOnly"), { silent: true });
+      return;
+    }
+    if (command === "/stop") {
+      const removed = await removeGroupByChatId(chatId);
+      await send(chatId, t(lang, removed ? "group.stopped" : "group.notLinked"));
+    } else {
+      await send(chatId, t(lang, "group.status"), { silent: true });
+    }
+  }
+}
+
+/** Channels have no senders; an admin posts `/link <token>` to connect one. */
+async function handleChannelPost(post: NonNullable<TelegramUpdate["channel_post"]>) {
+  const text = post.text?.trim();
+  if (!text) return;
+  const [command, arg] = text.split(/\s+/, 2);
+  if (command.split("@")[0].toLowerCase() !== "/link" || !arg) return;
+
+  const chatId = String(post.chat.id);
+  const result = await completeGroupLink(arg, {
     chatId,
-    removed
-      ? "🔌 <b>Disconnected.</b> You will no longer receive notifications.\nSend /start any time to set things up again."
-      : "This chat isn't connected.",
-    { replyMarkup: guestKeyboard() }
-  );
+    type: "channel",
+    title: post.chat.title ?? null,
+  });
+  const lang = await resolveLang(chatId, null);
+  await send(chatId, t(lang, result.ok ? "group.linked" : "group.badLink"));
 }
 
 /* ------------------------------ routing ---------------------------------- */
 
 async function handleMessage(update: NonNullable<TelegramUpdate["message"]>) {
-  if (!update.text || update.chat.type !== "private") return;
+  if (!update.text) return;
 
-  const chatId = String(update.chat.id);
   const text = update.text.trim();
   const [command, arg] = text.split(/\s+/, 2);
   const cmd = command.startsWith("/") ? command.split("@")[0].toLowerCase() : null;
 
+  if (update.chat.type === "group" || update.chat.type === "supergroup") {
+    return handleGroupMessage(update, cmd, arg);
+  }
+  if (update.chat.type !== "private") return;
+
+  const chatId = String(update.chat.id);
+  const lang = await resolveLang(chatId, update.from?.language_code);
+  const button = matchButton(text);
+
   if (cmd === "/start") {
-    if (arg) return handleStartWithToken(chatId, arg, update.from);
-    return showStart(chatId, update.from?.first_name);
+    if (arg) return handleStartWithToken(chatId, arg, lang, update.from);
+    return showStart(chatId, lang, update.from?.first_name);
   }
 
-  // Slash commands and taps on the bottom keyboard share the same handlers.
-  if (cmd === "/profile" || text === BTN.profile) return showProfile(chatId);
-  if (cmd === "/connect" || text === BTN.connectGithub) return showConnectGithub(chatId);
-  if (cmd === "/stats" || text === BTN.stats) return showStats(chatId);
-  if (cmd === "/activity" || text === BTN.activity) return showActivity(chatId);
-  if (cmd === "/repos" || text === BTN.repos) return showRepos(chatId);
-  if (cmd === "/notifications" || text === BTN.notifications) return showNotifications(chatId);
-  if (cmd === "/help" || text === BTN.help) return showHelp(chatId);
-  if (cmd === "/stop") return handleStop(chatId);
-  if (text === BTN.howItWorks) {
-    return void (await sendTelegramMessage(chatId, msg.howItWorks(), {
-      replyMarkup: { inline_keyboard: websiteButtons() },
+  if (cmd === "/profile" || button === "btn.profile") return showProfile(chatId, lang);
+  if (cmd === "/connect" || button === "btn.connect") {
+    return void (await send(chatId, msg.connectGithubMessage(lang), {
+      replyMarkup: { inline_keyboard: connectGithubButtons(lang) },
+    }));
+  }
+  if (cmd === "/stats" || button === "btn.stats") return showStats(chatId, lang);
+  if (cmd === "/activity" || button === "btn.activity") return showActivity(chatId, lang);
+  if (cmd === "/repos" || button === "btn.repos") return showRepos(chatId, lang);
+  if (cmd === "/top" || button === "btn.top") return showTop(chatId, lang);
+  if (cmd === "/notifications" || button === "btn.notifications") return showNotifications(chatId, lang);
+  if (cmd === "/language" || button === "btn.language") return showLanguage(chatId, lang);
+  if (cmd === "/help" || button === "btn.help") return showHelp(chatId, lang);
+  if (cmd === "/stop") return handleStop(chatId, lang);
+  if (button === "btn.how") {
+    return void (await send(chatId, msg.howItWorks(lang), {
+      replyMarkup: { inline_keyboard: websiteButtons(lang) },
     }));
   }
 
-  // Anything else: gentle nudge back to the menu.
   const member = await getMemberByChatId(chatId);
-  await sendTelegramMessage(chatId, "I didn't get that 🤔 Use the menu below or type /help.", {
-    replyMarkup: member ? memberKeyboard() : guestKeyboard(),
+  await send(chatId, t(lang, "unknown"), {
+    replyMarkup: member ? memberKeyboard(lang) : guestKeyboard(lang),
     silent: true,
   });
 }
@@ -258,21 +333,37 @@ async function handleCallback(query: NonNullable<TelegramUpdate["callback_query"
     return;
   }
   const chatId = String(message.chat.id);
+  const lang = await resolveLang(chatId, query.from.language_code);
+
+  // Language switch works for everyone (linked or not).
+  const newLang = LANGS.find((l) => CB.setLang(l) === query.data);
+  if (newLang) {
+    await setChatLanguage(chatId, newLang);
+    await answerCallbackQuery(query.id, t(newLang, "lang.changed"));
+    const member = await getMemberByChatId(chatId);
+    // Re-send the menu so the bottom keyboard labels switch language too.
+    await send(chatId, t(newLang, "lang.changed"), {
+      replyMarkup: member ? memberKeyboard(newLang) : guestKeyboard(newLang),
+      silent: true,
+    });
+    return;
+  }
+
   const member = await getMemberByChatId(chatId);
   if (!member) {
-    await answerCallbackQuery(query.id, "Not connected");
+    await answerCallbackQuery(query.id, t(lang, "toast.notConnected"));
     return;
   }
 
   if (query.data === CB.toggleNotifications) {
     const enabled = !member.notificationsEnabled;
     await setNotificationsByChatId(chatId, enabled);
-    await answerCallbackQuery(query.id, enabled ? "Notifications ON" : "Notifications paused");
+    await answerCallbackQuery(query.id, t(lang, enabled ? "notif.toastOn" : "notif.toastOff"));
     await editTelegramMessage(
       chatId,
       message.message_id,
-      msg.notificationsMessage(enabled),
-      notificationsKeyboard(enabled)
+      msg.notificationsMessage(lang, enabled),
+      notificationsKeyboard(lang, enabled)
     );
     return;
   }
@@ -283,8 +374,8 @@ async function handleCallback(query: NonNullable<TelegramUpdate["callback_query"
     await editTelegramMessage(
       chatId,
       message.message_id,
-      await buildStats(member.userId, range),
-      statsKeyboard(range)
+      await buildStats(lang, member.userId, range),
+      statsKeyboard(lang, range)
     );
     return;
   }
@@ -294,5 +385,6 @@ async function handleCallback(query: NonNullable<TelegramUpdate["callback_query"
 
 export async function handleTelegramUpdate(update: TelegramUpdate) {
   if (update.message) await handleMessage(update.message);
+  else if (update.channel_post) await handleChannelPost(update.channel_post);
   else if (update.callback_query) await handleCallback(update.callback_query);
 }
