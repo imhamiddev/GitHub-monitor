@@ -1,189 +1,227 @@
 import type { StatisticsCounts } from "@/lib/statistics/counts";
 import type { DashboardStats, RecentActivityItem } from "@/lib/dashboard/stats";
 import { getEventDisplay } from "@/lib/github/event-display";
-import { escapeHtml, formatTimestamp } from "@/lib/telegram/format";
-import type { Member, MonitoredRepo } from "@/lib/telegram/queries";
+import { escapeHtml, formatTimestamp, DIVIDER } from "@/lib/telegram/format";
+import { t, translateEventLabel, type Lang } from "@/lib/telegram/i18n";
+import type { Member, MonitoredRepo, TopActor, TopRepo } from "@/lib/telegram/queries";
 
-const DIVIDER = "━━━━━━━━━━━━━━━━";
+const join = (lines: string[]) => lines.join("\n");
 
-export function guestWelcome(firstName?: string | null): string {
-  const hello = firstName ? `Hi ${escapeHtml(firstName)}! 👋` : "Hi there! 👋";
-  return [
-    `${hello}`,
+export function guestWelcome(lang: Lang, firstName?: string | null): string {
+  return join([
+    firstName ? t(lang, "hello.named", { name: escapeHtml(firstName) }) : t(lang, "hello.anon"),
     "",
-    "🛰 <b>Welcome to GitHub Monitor</b>",
+    t(lang, "guest.title"),
     DIVIDER,
-    "A self-hosted dashboard that watches your GitHub repositories — and this bot delivers everything to you <b>in real time</b>.",
+    t(lang, "guest.intro"),
     "",
-    "<b>What you get:</b>",
-    "🔨 Commits, ⭐ stars, 🍴 forks",
-    "🔀 Pull requests, 🐛 issues, 💬 comments",
-    "🚀 Releases, ⚙️ workflows, 📦 deployments",
-    "👤 New followers",
+    t(lang, "guest.whatYouGet"),
+    t(lang, "guest.l1"),
+    t(lang, "guest.l2"),
+    t(lang, "guest.l3"),
+    t(lang, "guest.l4"),
     "",
-    "<b>You're not connected yet.</b> Create an account on the website, link GitHub, then open <b>Settings → Telegram</b> and scan the QR code.",
+    t(lang, "guest.notConnected"),
     "",
-    "Use the buttons below to get started 👇",
-  ].join("\n");
+    t(lang, "guest.cta"),
+  ]);
 }
 
-export function howItWorks(): string {
-  return [
-    "ℹ️ <b>How it works</b>",
+export function howItWorks(lang: Lang): string {
+  return join([
+    t(lang, "how.title"),
     DIVIDER,
-    "<b>1.</b> Sign up on the website and connect your GitHub account.",
-    "<b>2.</b> Choose which repositories to monitor and which event types matter.",
-    "<b>3.</b> Open <b>Settings → Telegram</b>, scan the QR code (or tap the link) and press <b>Start</b> here.",
-    "<b>4.</b> Every event is recorded on the dashboard <i>and</i> sent to this chat instantly.",
+    t(lang, "how.s1"),
+    t(lang, "how.s2"),
+    t(lang, "how.s3"),
+    t(lang, "how.s4"),
     "",
-    "🔒 You can pause notifications or disconnect at any time — from the site or with /stop.",
-  ].join("\n");
+    t(lang, "how.foot"),
+  ]);
 }
 
-export function guestProfile(): string {
-  return [
-    "👤 <b>Profile</b>",
+export function guestProfile(lang: Lang): string {
+  return join([
+    t(lang, "guestProfile.title"),
     DIVIDER,
-    "🔴 <b>Status:</b> Not connected",
+    t(lang, "guestProfile.status"),
     "",
-    "This chat isn't linked to a GitHub Monitor account yet. Sign in on the website, then link this chat from <b>Settings → Telegram</b>.",
-  ].join("\n");
+    t(lang, "guestProfile.body"),
+  ]);
 }
 
-export function connectGithubMessage(): string {
-  return [
-    "🔗 <b>Connect GitHub</b>",
-    DIVIDER,
-    "Open the website to sign in and install the GitHub App on your account. After that, pick the repositories you want to monitor.",
-    "",
-    "👇 Tap the button below.",
-  ].join("\n");
+export function connectGithubMessage(lang: Lang): string {
+  return join([t(lang, "connect.title"), DIVIDER, t(lang, "connect.body"), "", t(lang, "connect.tap")]);
 }
 
-export function memberWelcome(member: Member): string {
+export function memberWelcome(lang: Lang, member: Member): string {
   const name = member.name ? ` ${escapeHtml(member.name)}` : "";
-  return [
-    `👋 Welcome back${name}!`,
+  return join([
+    t(lang, "member.welcomeBack", { name }),
     "",
-    "✅ This chat is connected. You'll receive every event from your monitored repositories right here.",
+    t(lang, "member.connected"),
     "",
-    "Use the menu below or type /help.",
-  ].join("\n");
+    t(lang, "member.useMenu"),
+  ]);
 }
 
-export function linkedSuccess(firstName?: string | null): string {
+export function linkedSuccess(lang: Lang, firstName?: string | null): string {
   const name = firstName ? ` ${escapeHtml(firstName)}` : "";
-  return [
-    `✅ <b>Connected!</b>`,
+  return join([
+    t(lang, "linked.title"),
     DIVIDER,
-    `Hi${name}, this chat is now linked to your GitHub Monitor account.`,
+    t(lang, "linked.body", { name }),
     "",
-    "From now on you'll get a message here the moment something happens in your monitored repositories.",
+    t(lang, "linked.foot"),
     "",
-    "📊 Try <b>Statistics</b> or <b>Recent activity</b> from the menu below.",
-  ].join("\n");
+    t(lang, "linked.try"),
+  ]);
 }
 
 export function memberProfile(
+  lang: Lang,
   member: Member,
-  stats: DashboardStats
+  stats: DashboardStats,
+  groupCount: number
 ): string {
   const since = member.connectedAt ? member.connectedAt.toISOString().slice(0, 10) : "—";
-  return [
-    "👤 <b>Profile</b>",
+  const github = member.githubLogin
+    ? `<a href="https://github.com/${encodeURIComponent(member.githubLogin)}">@${escapeHtml(member.githubLogin)}</a>`
+    : t(lang, "profile.githubNone");
+  return join([
+    t(lang, "profile.title"),
     DIVIDER,
-    `🟢 <b>Status:</b> Connected`,
-    `🙍 <b>Name:</b> ${escapeHtml(member.name || "—")}`,
-    `✉️ <b>Email:</b> ${escapeHtml(member.email)}`,
-    member.githubLogin
-      ? `🐙 <b>GitHub:</b> <a href="https://github.com/${encodeURIComponent(member.githubLogin)}">@${escapeHtml(member.githubLogin)}</a>`
-      : "🐙 <b>GitHub:</b> not connected yet",
-    `🔔 <b>Notifications:</b> ${member.notificationsEnabled ? "ON" : "OFF"}`,
-    `📅 <b>Linked since:</b> ${since}`,
+    t(lang, "profile.status"),
+    t(lang, "profile.name", { v: escapeHtml(member.name || "—") }),
+    t(lang, "profile.email", { v: escapeHtml(member.email) }),
+    t(lang, "profile.github", { v: github }),
+    t(lang, "profile.notifications", { v: t(lang, member.notificationsEnabled ? "on" : "off") }),
+    t(lang, "profile.since", { v: since }),
+    ...(groupCount > 0 ? [t(lang, "profile.groups", { v: groupCount })] : []),
     "",
-    "<b>Overview</b>",
-    `📁 Repositories: ${stats.repositoriesCount}  ·  👁 Monitored: ${stats.monitoredCount}`,
-    `⚡ Events today: ${stats.eventsTodayCount}  ·  🗂 Total: ${stats.totalEventsCount}`,
-  ].join("\n");
+    t(lang, "profile.overview"),
+    t(lang, "profile.repos", { a: stats.repositoriesCount, b: stats.monitoredCount }),
+    t(lang, "profile.events", { a: stats.eventsTodayCount, b: stats.totalEventsCount }),
+  ]);
 }
 
-const RANGE_LABEL = { today: "Today", "7d": "Last 7 days", "30d": "Last 30 days" } as const;
+export type StatsRange = "today" | "7d" | "30d";
 
-export function statsMessage(range: keyof typeof RANGE_LABEL, s: StatisticsCounts): string {
+export function statsMessage(lang: Lang, range: StatsRange, s: StatisticsCounts): string {
   const total = s.commits + s.stars + s.forks + s.pullRequests + s.issues + s.releases;
-  return [
-    `📊 <b>Statistics — ${RANGE_LABEL[range]}</b>`,
+  return join([
+    t(lang, "stats.title", { range: t(lang, `stats.${range}`) }),
     DIVIDER,
-    `🔨 Commits: <b>${s.commits}</b>`,
-    `⭐ Stars: <b>${s.stars}</b>`,
-    `🍴 Forks: <b>${s.forks}</b>`,
-    `🔀 Pull requests: <b>${s.pullRequests}</b>`,
-    `🐛 Issues: <b>${s.issues}</b>`,
-    `🚀 Releases: <b>${s.releases}</b>`,
+    t(lang, "stats.commits", { n: s.commits }),
+    t(lang, "stats.stars", { n: s.stars }),
+    t(lang, "stats.forks", { n: s.forks }),
+    t(lang, "stats.prs", { n: s.pullRequests }),
+    t(lang, "stats.issues", { n: s.issues }),
+    t(lang, "stats.releases", { n: s.releases }),
     DIVIDER,
-    `Σ Total: <b>${total}</b>`,
-  ].join("\n");
+    t(lang, "stats.total", { n: total }),
+  ]);
 }
 
-function activityLine(item: RecentActivityItem): string {
-  const label = getEventDisplay(item.eventType, item.action).label;
+function activityLine(lang: Lang, item: RecentActivityItem): string {
+  const label = translateEventLabel(lang, getEventDisplay(item.eventType, item.action).label);
   const actor = item.actorLogin ? ` · @${escapeHtml(item.actorLogin)}` : "";
   const repo = item.eventType === "follower" ? "" : ` — ${escapeHtml(item.repositoryName)}`;
-  return `• <b>${escapeHtml(label)}</b>${repo}${actor}\n   <i>${formatTimestamp(item.createdAt)}</i>`;
+  return `• <b>${escapeHtml(label)}</b>${repo}${actor}\n   <i>${formatTimestamp(item.createdAt, lang)}</i>`;
 }
 
-export function activityMessage(items: RecentActivityItem[]): string {
+export function activityMessage(lang: Lang, items: RecentActivityItem[]): string {
   if (items.length === 0) {
-    return "🕒 <b>Recent activity</b>\n" + DIVIDER + "\nNo events yet. They'll appear here as soon as something happens.";
+    return join([t(lang, "activity.title"), DIVIDER, t(lang, "activity.empty")]);
   }
-  return ["🕒 <b>Recent activity</b>", DIVIDER, ...items.map(activityLine)].join("\n");
+  return join([t(lang, "activity.title"), DIVIDER, ...items.map((i) => activityLine(lang, i))]);
 }
 
-export function reposMessage(repos: MonitoredRepo[]): string {
+export function reposMessage(lang: Lang, repos: MonitoredRepo[]): string {
   if (repos.length === 0) {
-    return "📁 <b>Monitored repositories</b>\n" + DIVIDER + "\nYou aren't monitoring any repository yet. Enable monitoring from the Repositories page on the website.";
+    return join([t(lang, "repos.title", { n: 0 }), DIVIDER, t(lang, "repos.empty")]);
   }
-  return [
-    `📁 <b>Monitored repositories</b> (${repos.length})`,
+  return join([
+    t(lang, "repos.title", { n: repos.length }),
     DIVIDER,
     ...repos.map(
       (r) =>
         `${r.private ? "🔒" : "🌐"} <a href="https://github.com/${r.fullName}">${escapeHtml(r.fullName)}</a>  ·  ⭐ ${r.starsCount}  🍴 ${r.forksCount}`
     ),
-  ].join("\n");
+  ]);
 }
 
-export function notificationsMessage(enabled: boolean): string {
-  return [
-    "🔔 <b>Notifications</b>",
+const MEDALS = ["🥇", "🥈", "🥉"];
+const rank = (i: number) => MEDALS[i] ?? `${i + 1}.`;
+
+export function topMessage(
+  lang: Lang,
+  data: { starred: MonitoredRepo[]; activeRepos: TopRepo[]; actors: TopActor[] }
+): string {
+  const empty = data.starred.length === 0 && data.activeRepos.length === 0 && data.actors.length === 0;
+  if (empty) return join([t(lang, "top.title"), DIVIDER, t(lang, "top.empty")]);
+
+  const blocks: string[] = [t(lang, "top.title"), DIVIDER];
+  if (data.starred.length > 0) {
+    blocks.push(
+      t(lang, "top.repos"),
+      ...data.starred.map((r, i) => `${rank(i)} ${escapeHtml(r.fullName)} — ⭐ ${r.starsCount}`),
+      ""
+    );
+  }
+  if (data.activeRepos.length > 0) {
+    blocks.push(
+      t(lang, "top.active"),
+      ...data.activeRepos.map(
+        (r, i) => `${rank(i)} ${escapeHtml(r.fullName)} — ${t(lang, "top.events", { n: r.events })}`
+      ),
+      ""
+    );
+  }
+  if (data.actors.length > 0) {
+    blocks.push(
+      t(lang, "top.actors"),
+      ...data.actors.map(
+        (a, i) =>
+          `${rank(i)} <a href="https://github.com/${encodeURIComponent(a.login)}">@${escapeHtml(a.login)}</a> — ${t(lang, "top.events", { n: a.events })}`
+      )
+    );
+  }
+  return join(blocks).trimEnd();
+}
+
+export function notificationsMessage(lang: Lang, enabled: boolean): string {
+  return join([
+    t(lang, "notif.title"),
     DIVIDER,
-    `Currently: <b>${enabled ? "ON ✅" : "OFF ⏸"}</b>`,
+    t(lang, "notif.current", { v: `${t(lang, enabled ? "on" : "off")} ${enabled ? "✅" : "⏸"}` }),
     "",
-    enabled
-      ? "You receive every event from your monitored repositories."
-      : "Events are still recorded on the dashboard, but nothing is sent here.",
-  ].join("\n");
+    t(lang, enabled ? "notif.onText" : "notif.offText"),
+  ]);
 }
 
-export function helpMessage(connected: boolean): string {
-  return [
-    "❓ <b>Help</b>",
+export function helpMessage(lang: Lang, connected: boolean): string {
+  return join([
+    t(lang, "help.title"),
     DIVIDER,
-    "<b>Commands</b>",
-    "/start — main menu",
-    "/profile — your account",
+    t(lang, "help.commands"),
+    t(lang, "help.start"),
+    t(lang, "help.profile"),
     ...(connected
       ? [
-          "/stats — event statistics",
-          "/activity — latest events",
-          "/repos — monitored repositories",
-          "/notifications — pause / resume alerts",
+          t(lang, "help.stats"),
+          t(lang, "help.activity"),
+          t(lang, "help.repos"),
+          t(lang, "help.top"),
+          t(lang, "help.notifications"),
         ]
-      : ["/connect — how to connect GitHub"]),
-    "/stop — disconnect this chat",
-    "/help — this message",
-  ].join("\n");
+      : [t(lang, "help.connect")]),
+    t(lang, "help.language"),
+    t(lang, "help.stop"),
+    t(lang, "help.help"),
+  ]);
 }
 
-export const NOT_CONNECTED_HINT =
-  "🔒 This feature needs a connected account. Open <b>Settings → Telegram</b> on the website to link this chat.";
+export function languageMessage(lang: Lang): string {
+  return join([t(lang, "lang.title"), DIVIDER, t(lang, "lang.body")]);
+}
