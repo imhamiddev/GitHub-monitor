@@ -9,7 +9,8 @@ import {
   findMonitoredRepositoryByGithubId,
   isEventCategoryEnabled,
 } from "@/lib/github/repositories";
-import { markInstallationRevoked } from "@/lib/github/installations";
+import { markInstallationActive, markInstallationRevoked } from "@/lib/github/installations";
+import { alertByInstallationId } from "@/lib/telegram/health";
 import { verifyGithubWebhookSignature } from "@/lib/security/webhook";
 import { getUserIdForInstallation } from "@/lib/github/installations";
 import { notifyUserOfEvent } from "@/lib/telegram/notify";
@@ -194,5 +195,16 @@ async function handleInstallationLifecycleEvent(payload: unknown) {
 
   if (action === "suspend" || action === "deleted") {
     await markInstallationRevoked(installationId);
+    after(() => alertByInstallationId(installationId, { kind: action === "suspend" ? "suspended" : "deleted" }));
+  } else if (action === "unsuspend") {
+    await markInstallationActive(installationId);
+    after(() => alertByInstallationId(installationId, { kind: "unsuspended" }));
+  } else if (action === "removed") {
+    // installation_repositories: repositories dropped from the app's access.
+    const removed = (payload as { repositories_removed?: { full_name?: unknown }[] }).repositories_removed;
+    const names = (removed ?? []).map((r) => r.full_name).filter((n): n is string => typeof n === "string");
+    if (names.length > 0) {
+      after(() => alertByInstallationId(installationId, { kind: "reposRemoved", names }));
+    }
   }
 }
