@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { TelegramGroupsSection, type TelegramGroupItem } from "@/components/settings/telegram-groups-section";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,10 +52,12 @@ export function TelegramConnectionCard({
   connection,
   botUsername,
   configured,
+  groups,
 }: {
   connection: ConnectionState;
   botUsername: string;
   configured: boolean;
+  groups: TelegramGroupItem[];
 }) {
   const router = useRouter();
   const runWithBar = useLoadingBarAction();
@@ -194,6 +197,8 @@ export function TelegramConnectionCard({
               aria-label="Toggle Telegram notifications"
             />
           </div>
+
+          <TelegramGroupsSection groups={groups} />
 
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" asChild>
