@@ -110,6 +110,14 @@ export async function markInstallationRevoked(installationId: number) {
     .where(eq(githubInstallation.installationId, installationId));
 }
 
+/** Re-activates an installation after GitHub lifts a suspension. */
+export async function markInstallationActive(installationId: number) {
+  await db
+    .update(githubInstallation)
+    .set({ status: "active", updatedAt: new Date() })
+    .where(eq(githubInstallation.installationId, installationId));
+}
+
 export async function deleteInstallation(id: string, userId: string) {
   await db
     .delete(githubInstallation)
