@@ -99,7 +99,7 @@ const en = {
   "how.s2": "<b>2.</b> Choose which repositories to monitor and which event types matter.",
   "how.s3": "<b>3.</b> Open <b>Settings → Telegram</b>, scan the QR code (or tap the link) and press <b>Start</b> here.",
   "how.s4": "<b>4.</b> Every event is recorded on the dashboard <i>and</i> sent to this chat instantly.",
-  "how.foot": "🔒 You can pause notifications or disconnect at any time — from the site or with /stop.",
+  "how.foot": "🔒 You can pause notifications with the Notifications button, or disconnect any time from the website.",
 
   "guestProfile.title": "👤 <b>Profile</b>",
   "guestProfile.status": "🔴 <b>Status:</b> Not connected",
@@ -112,7 +112,7 @@ const en = {
   /* member screens */
   "member.welcomeBack": "👋 Welcome back{name}!",
   "member.connected": "✅ This chat is connected. You'll receive every event from your monitored repositories right here.",
-  "member.useMenu": "Use the menu below or type /help.",
+  "member.useMenu": "Use the menu below.",
 
   "linked.title": "✅ <b>Connected!</b>",
   "linked.body": "Hi{name}, this chat is now linked to your GitHub Monitor account.",
@@ -167,18 +167,8 @@ const en = {
   "notif.toastOff": "Notifications paused",
 
   "help.title": "❓ <b>Help</b>",
-  "help.commands": "<b>Commands</b>",
-  "help.start": "/start — main menu",
-  "help.profile": "/profile — your account",
-  "help.stats": "/stats — event statistics",
-  "help.activity": "/activity — latest events",
-  "help.repos": "/repos — monitored repositories",
-  "help.top": "/top — weekly leaderboard",
-  "help.notifications": "/notifications — pause / resume alerts",
-  "help.language": "/language — change language",
-  "help.connect": "/connect — how to connect GitHub",
-  "help.stop": "/stop — disconnect this chat",
-  "help.help": "/help — this message",
+  "help.member": "Use the buttons at the bottom of the chat:\n👤 <b>Profile</b> — your account and overview\n📊 <b>Statistics</b> — events today / 7 / 30 days\n🕒 <b>Recent activity</b> — latest events\n🏆 <b>Top</b> — weekly leaderboard\n📁 <b>Repositories</b> — monitored repositories\n🔔 <b>Notifications</b> — pause or resume alerts\n🌐 <b>Language</b> — English / فارسی",
+  "help.guest": "Use the buttons at the bottom of the chat:\n👤 <b>Profile</b> — connection status\n🔗 <b>Connect GitHub</b> — open the website to get started\nℹ️ <b>How it works</b> — a short walkthrough\n🌐 <b>Language</b> — English / فارسی",
 
   "lang.title": "🌐 <b>Language</b>",
   "lang.body": "Choose the language of the bot's messages:",
@@ -186,11 +176,9 @@ const en = {
 
   /* misc replies */
   "need.member": "🔒 This feature needs a connected account. Open <b>Settings → Telegram</b> on the website to link this chat.",
-  "unknown": "I didn't get that 🤔 Use the menu below or type /help.",
-  "err.inUse": "⚠️ This Telegram account is already linked to another GitHub Monitor user. Send /stop first, then try again.",
+  "unknown": "I didn't get that 🤔 Please use the menu below.",
+  "err.inUse": "⚠️ This Telegram account is already linked to another GitHub Monitor user. Disconnect it there first (Settings → Telegram), then try again.",
   "err.badLink": "❌ This link is invalid or has expired. Generate a new one from <b>Settings → Telegram</b>.",
-  "stop.done": "🔌 <b>Disconnected.</b> You will no longer receive notifications.\nSend /start any time to set things up again.",
-  "stop.none": "This chat isn't connected.",
   "toast.notConnected": "Not connected",
 
   /* groups & channels */
@@ -289,7 +277,7 @@ const fa = {
   "how.s2": "<b>۲.</b> انتخاب کنید کدام ریپوها و کدام نوع رویدادها مانیتور شوند.",
   "how.s3": "<b>۳.</b> به <b>Settings → Telegram</b> بروید، بارکد را اسکن کنید (یا روی لینک بزنید) و اینجا <b>Start</b> را بزنید.",
   "how.s4": "<b>۴.</b> هر رویداد هم در داشبورد ثبت می‌شود <i>و</i> هم همان لحظه به این چت می‌آید.",
-  "how.foot": "🔒 هر زمان بخواهید می‌توانید اعلان‌ها را متوقف کنید یا اتصال را قطع کنید — از سایت یا با /stop.",
+  "how.foot": "🔒 با دکمه «اعلان‌ها» می‌توانید اعلان‌ها را متوقف کنید و هر زمان بخواهید از سایت اتصال را قطع کنید.",
 
   "guestProfile.title": "👤 <b>پروفایل</b>",
   "guestProfile.status": "🔴 <b>وضعیت:</b> متصل نیست",
@@ -301,7 +289,7 @@ const fa = {
 
   "member.welcomeBack": "👋 خوش برگشتی{name}!",
   "member.connected": "✅ این چت متصل است. همه رویدادهای ریپوهای مانیتورشده را همین‌جا دریافت می‌کنید.",
-  "member.useMenu": "از منوی پایین استفاده کنید یا /help را بفرستید.",
+  "member.useMenu": "از منوی پایین استفاده کنید.",
 
   "linked.title": "✅ <b>متصل شد!</b>",
   "linked.body": "سلام{name}، این چت اکنون به حساب GitHub Monitor شما وصل است.",
@@ -356,29 +344,17 @@ const fa = {
   "notif.toastOff": "اعلان‌ها متوقف شد",
 
   "help.title": "❓ <b>راهنما</b>",
-  "help.commands": "<b>دستورات</b>",
-  "help.start": "/start — منوی اصلی",
-  "help.profile": "/profile — حساب شما",
-  "help.stats": "/stats — آمار رویدادها",
-  "help.activity": "/activity — آخرین رویدادها",
-  "help.repos": "/repos — ریپوهای مانیتورشده",
-  "help.top": "/top — برترین‌های هفته",
-  "help.notifications": "/notifications — توقف / ادامه اعلان‌ها",
-  "help.language": "/language — تغییر زبان",
-  "help.connect": "/connect — نحوه اتصال به گیت‌هاب",
-  "help.stop": "/stop — قطع اتصال این چت",
-  "help.help": "/help — همین پیام",
+  "help.member": "از دکمه‌های پایین چت استفاده کنید:\n👤 <b>پروفایل</b> — حساب و خلاصه وضعیت\n📊 <b>آمار</b> — رویدادهای امروز / ۷ / ۳۰ روز\n🕒 <b>فعالیت‌های اخیر</b> — آخرین رویدادها\n🏆 <b>برترین‌ها</b> — رتبه‌بندی هفته\n📁 <b>ریپوزیتوری‌ها</b> — ریپوهای مانیتورشده\n🔔 <b>اعلان‌ها</b> — توقف یا ادامه اعلان‌ها\n🌐 <b>زبان</b> — English / فارسی",
+  "help.guest": "از دکمه‌های پایین چت استفاده کنید:\n👤 <b>پروفایل</b> — وضعیت اتصال\n🔗 <b>اتصال به گیت‌هاب</b> — باز کردن سایت برای شروع\nℹ️ <b>نحوه کار</b> — توضیح کوتاه\n🌐 <b>زبان</b> — English / فارسی",
 
   "lang.title": "🌐 <b>زبان</b>",
   "lang.body": "زبان پیام‌های ربات را انتخاب کنید:",
   "lang.changed": "زبان روی فارسی تنظیم شد 🇮🇷",
 
   "need.member": "🔒 این بخش به حساب متصل نیاز دارد. در سایت به <b>Settings → Telegram</b> بروید و این چت را متصل کنید.",
-  "unknown": "متوجه نشدم 🤔 از منوی پایین استفاده کنید یا /help را بفرستید.",
-  "err.inUse": "⚠️ این حساب تلگرام قبلاً به کاربر دیگری در GitHub Monitor وصل شده است. اول /stop را بفرستید و دوباره تلاش کنید.",
+  "unknown": "متوجه نشدم 🤔 لطفاً از منوی پایین استفاده کنید.",
+  "err.inUse": "⚠️ این حساب تلگرام قبلاً به کاربر دیگری در GitHub Monitor وصل شده است. اول از آنجا قطعش کنید (Settings → Telegram) و دوباره تلاش کنید.",
   "err.badLink": "❌ این لینک نامعتبر است یا منقضی شده. از <b>Settings → Telegram</b> لینک جدید بسازید.",
-  "stop.done": "🔌 <b>قطع شد.</b> دیگر اعلانی دریافت نخواهید کرد.\nبرای راه‌اندازی دوباره، هر زمان /start را بفرستید.",
-  "stop.none": "این چت متصل نیست.",
   "toast.notConnected": "متصل نیست",
 
   "group.linked": "✅ <b>گروه متصل شد!</b>\nاین چت از این پس اعلان‌های GitHub Monitor را دریافت می‌کند. برای قطع اتصال، ادمین‌ها می‌توانند /stop را بفرستند.",
