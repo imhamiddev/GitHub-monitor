@@ -16,7 +16,6 @@ import {
 } from "@/lib/telegram/connection";
 import { LANGS, matchButton, t, type Lang } from "@/lib/telegram/i18n";
 import {
-  activityButtons,
   CB,
   connectGithubButtons,
   connectTelegramButtons,
@@ -64,10 +63,7 @@ function statsKeyboard(lang: Lang, active: StatsRange): { inline_keyboard: Inlin
     style: r === active ? "success" : "primary",
   });
   return {
-    inline_keyboard: [
-      [label("today", "ib.today"), label("7d", "ib.d7"), label("30d", "ib.d30")],
-      ...dashboardButtons(lang),
-    ],
+    inline_keyboard: [[label("today", "ib.today"), label("7d", "ib.d7"), label("30d", "ib.d30")]],
   };
 }
 
@@ -151,25 +147,19 @@ async function showActivity(chatId: string, lang: Lang) {
   const member = await requireMember(chatId, lang);
   if (!member) return;
   const items = await getRecentActivity(member.userId, 8);
-  await send(chatId, msg.activityMessage(lang, items), {
-    replyMarkup: { inline_keyboard: activityButtons(lang) },
-  });
+  await send(chatId, msg.activityMessage(lang, items));
 }
 
 async function showRepos(chatId: string, lang: Lang) {
   const member = await requireMember(chatId, lang);
   if (!member) return;
-  await send(chatId, msg.reposMessage(lang, await getMonitoredRepos(member.userId)), {
-    replyMarkup: { inline_keyboard: dashboardButtons(lang) },
-  });
+  await send(chatId, msg.reposMessage(lang, await getMonitoredRepos(member.userId)));
 }
 
 async function showTop(chatId: string, lang: Lang) {
   const member = await requireMember(chatId, lang);
   if (!member) return;
-  await send(chatId, msg.topMessage(lang, await getTopData(member.userId)), {
-    replyMarkup: { inline_keyboard: activityButtons(lang) },
-  });
+  await send(chatId, msg.topMessage(lang, await getTopData(member.userId)));
 }
 
 async function showNotifications(chatId: string, lang: Lang) {
