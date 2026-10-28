@@ -14,6 +14,7 @@ import { alertByInstallationId } from "@/lib/telegram/health";
 import { verifyGithubWebhookSignature } from "@/lib/security/webhook";
 import { getUserIdForInstallation } from "@/lib/github/installations";
 import { notifyUserOfEvent } from "@/lib/telegram/notify";
+import { evaluateAlertRules } from "@/lib/alerts/engine";
 
 export const runtime = "nodejs";
 // after() waits one batching window (~3s) before sending Telegram messages.
@@ -141,6 +142,20 @@ export async function POST(request: NextRequest) {
       actorLogin: normalized.actorLogin,
       summary: normalized.summary,
       url: normalized.url,
+    });
+  });
+
+  // Alert rules ("N failures within M minutes") are evaluated independently
+  // of the notification batching above.
+  after(async () => {
+    const userId = await getUserIdForInstallation(repo.installationId);
+    if (!userId) return;
+    await evaluateAlertRules({
+      userId,
+      repositoryId: repo.id,
+      repositoryName: repo.fullName,
+      eventType,
+      action: normalized.action,
     });
   });
 

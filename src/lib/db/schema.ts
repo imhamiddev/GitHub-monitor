@@ -339,6 +339,35 @@ export const telegramOutbox = pgTable(
 );
 
 /* ------------------------------------------------------------------ */
+/*  Alert rules — "tell me when X happens N times within M minutes"   */
+/* ------------------------------------------------------------------ */
+
+export const alertRule = pgTable(
+  "alert_rule",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    // null = applies to every repository of the user.
+    repositoryId: text("repository_id").references(() => repository.id, { onDelete: "cascade" }),
+    // GitHub event type to count ("workflow_run", "issues", …) or "any".
+    eventType: text("event_type").notNull(),
+    // Optional action filter ("failure", "opened", …); null = any action.
+    action: text("action"),
+    threshold: integer("threshold").notNull().default(1),
+    windowMinutes: integer("window_minutes").notNull().default(60),
+    // Minimum gap between two notifications of the same rule.
+    cooldownMinutes: integer("cooldown_minutes").notNull().default(60),
+    enabled: boolean("enabled").notNull().default(true),
+    lastTriggeredAt: timestamp("last_triggered_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("alert_rule_user_id_idx").on(t.userId)]
+);
+
+/* ------------------------------------------------------------------ */
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 
