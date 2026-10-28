@@ -7,16 +7,23 @@ import { getServerSession } from "@/lib/auth/session";
 import { getInstallationForUser } from "@/lib/github/installations";
 import { getRepositoryForUser } from "@/lib/github/repo-detail";
 import { EVENT_CATEGORIES, EVENT_CATEGORY_LABELS } from "@/lib/github/events";
+import { RepoInsights } from "@/components/repositories/repo-insights";
 import { MonitoringToggleCard } from "@/components/repositories/monitoring-toggle-card";
 import { EventSettingRow } from "@/components/repositories/event-setting-row";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/repositories/[id]">): Promise<Metadata> {
   const { id } = await params;
-  return { title: `Repository settings — GitHub Monitor (${id})` };
+  return { title: `Repository — GitHub Monitor (${id})` };
 }
 
 export default async function RepositoryDetailPage({
@@ -34,7 +41,7 @@ export default async function RepositoryDetailPage({
   if (!repo) notFound();
 
   return (
-    <div className="flex max-w-2xl flex-1 flex-col gap-6">
+    <div className="flex max-w-5xl flex-1 flex-col gap-6">
       <div>
         <Button variant="ghost" size="sm" asChild className="mb-2 -ml-2">
           <Link href="/repositories">
@@ -44,9 +51,13 @@ export default async function RepositoryDetailPage({
         </Button>
         <div className="flex items-center justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{repo.name}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {repo.name}
+            </h1>
             {repo.description && (
-              <p className="text-muted-foreground text-sm">{repo.description}</p>
+              <p className="text-muted-foreground text-sm">
+                {repo.description}
+              </p>
             )}
           </div>
           <Button variant="outline" size="sm" asChild>
@@ -62,32 +73,36 @@ export default async function RepositoryDetailPage({
         </div>
       </div>
 
-      <MonitoringToggleCard
-        githubRepoId={repo.githubRepoId}
-        repoName={repo.name}
-        initialMonitored={repo.isMonitored}
-      />
+      <RepoInsights repositoryId={repo.id} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Tracked Events</CardTitle>
-          <CardDescription>
-            Choose which kinds of events are tracked and shown in your
-            activity feed for this repository.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="divide-y">
-          {EVENT_CATEGORIES.map((category) => (
-            <EventSettingRow
-              key={category}
-              repositoryId={repo.id}
-              category={category}
-              label={EVENT_CATEGORY_LABELS[category]}
-              initialEnabled={repo.eventSettings[category]}
-            />
-          ))}
-        </CardContent>
-      </Card>
+      <div className="flex max-w-2xl flex-col gap-6">
+        <MonitoringToggleCard
+          githubRepoId={repo.githubRepoId}
+          repoName={repo.name}
+          initialMonitored={repo.isMonitored}
+        />
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Tracked Events</CardTitle>
+            <CardDescription>
+              Choose which kinds of events are tracked and shown in your
+              activity feed for this repository.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="divide-y">
+            {EVENT_CATEGORIES.map((category) => (
+              <EventSettingRow
+                key={category}
+                repositoryId={repo.id}
+                category={category}
+                label={EVENT_CATEGORY_LABELS[category]}
+                initialEnabled={repo.eventSettings[category]}
+              />
+            ))}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
