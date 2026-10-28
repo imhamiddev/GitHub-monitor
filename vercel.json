@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/followers",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/retention",
+      "schedule": "30 3 * * *"
     }
   ]
 }
