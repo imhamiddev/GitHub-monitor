@@ -67,6 +67,14 @@ const en = {
   "batch.other": "• {label} ×{n}",
   "batch.moreRepos": "… and {n} more repositories",
 
+  /* alert rules */
+  "alert.title": "🚨 <b>Alert triggered</b>",
+  "alert.what": "📌 <b>Rule:</b> {what}",
+  "alert.count": "📈 <b>{n}</b> matching events in the last {minutes} min",
+  "alert.repo": "📁 <b>Repository:</b> {repo}",
+  "alert.lastRepo": "📁 <b>Latest in:</b> {repo}",
+  "alert.anyEvent": "Any event",
+
   /* milestones */
   "ms.stars": "🎉 <b>Milestone reached!</b>\n{divider}\n⭐ <b>{repo}</b> just hit <b>{n} stars</b>!\nGreat work — keep shipping 🚀",
   "ms.followers": "🎉 <b>Milestone reached!</b>\n{divider}\n👥 You now have <b>{n} followers</b> on GitHub!\nThanks for building in public 💚",
@@ -247,6 +255,13 @@ const fa = {
   "batch.unfollowers": "👋 {n} آنفالو (اکنون {total})",
   "batch.other": "• {label} ×{n}",
   "batch.moreRepos": "… و {n} ریپوزیتوری دیگر",
+
+  "alert.title": "🚨 <b>هشدار فعال شد</b>",
+  "alert.what": "📌 <b>قانون:</b> {what}",
+  "alert.count": "📈 <b>{n}</b> رویداد منطبق در {minutes} دقیقه اخیر",
+  "alert.repo": "📁 <b>ریپوزیتوری:</b> {repo}",
+  "alert.lastRepo": "📁 <b>آخرین رویداد در:</b> {repo}",
+  "alert.anyEvent": "هر رویدادی",
 
   "ms.stars": "🎉 <b>رسیدن به یک نقطه‌عطف!</b>\n{divider}\n⭐ ریپوی <b>{repo}</b> به <b>{n} ستاره</b> رسید!\nعالیه — به ساختن ادامه بده 🚀",
   "ms.followers": "🎉 <b>رسیدن به یک نقطه‌عطف!</b>\n{divider}\n👥 تعداد فالوورهای شما در گیت‌هاب به <b>{n}</b> رسید!\nممنون که در معرض دید می‌سازی 💚",
