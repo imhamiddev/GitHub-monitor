@@ -3,7 +3,7 @@ import { and, eq, isNull, lt } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { telegramConnection, telegramGroup, telegramMilestone, telegramOutbox } from "@/lib/db/schema";
-import { isTelegramConfigured, sendTelegramMessage, type ReplyMarkup } from "@/lib/telegram/api";
+import { isTelegramConfigured, sendTelegramMessage, type InlineButton, type ReplyMarkup } from "@/lib/telegram/api";
 import { formatBatchMessage } from "@/lib/telegram/batch";
 import { getDestinations, type Destination } from "@/lib/telegram/destinations";
 import { DIVIDER, formatEventMessage, type FormattedMessage, type TelegramEventInput } from "@/lib/telegram/format";
@@ -46,9 +46,6 @@ async function deliver(
     else if (!result.ok) console.error("Telegram notification failed:", result.error);
   }
 }
-
-const toMarkup = (m: FormattedMessage): ReplyMarkup | undefined =>
-  m.buttons.length > 0 ? { inline_keyboard: m.buttons } : undefined;
 
 /* ------------------------------ milestones ------------------------------ */
 
@@ -143,7 +140,7 @@ export async function flushUserOutbox(userId: string) {
       await deliver(userId, destinations, (lang) => {
         const message: FormattedMessage =
           events.length === 1 ? formatEventMessage(events[0], lang) : formatBatchMessage(events, lang);
-        return { text: message.text, markup: toMarkup(message) };
+        return { text: message.text };
       });
       await celebrateMilestones(userId, events, destinations);
     }
@@ -172,7 +169,7 @@ export async function scheduleEventNotification(userId: string, event: TelegramE
 /** Sends an immediate (non-batched) message to all of a user's chats. */
 export async function notifyUserText(
   userId: string,
-  build: (lang: Lang) => { text: string; buttons?: FormattedMessage["buttons"] }
+  build: (lang: Lang) => { text: string; buttons?: InlineButton[][] }
 ) {
   if (!isTelegramConfigured()) return;
   try {
