@@ -1,8 +1,6 @@
-import type { InlineButton } from "@/lib/telegram/api";
 import { getEventDisplay } from "@/lib/github/event-display";
 import { DIVIDER, escapeHtml, formatTimestamp, type FormattedMessage, type TelegramEventInput } from "@/lib/telegram/format";
 import { t, translateEventLabel, type Lang } from "@/lib/telegram/i18n";
-import { getSiteUrl } from "@/lib/telegram/keyboards";
 
 const MAX_REPOS = 5;
 
@@ -72,8 +70,5 @@ export function formatBatchMessage(events: TelegramEventInput[], lang: Lang): Fo
   }
   lines.push(`🕒 <i>${t(lang, "batch.range", { from: formatTimestamp(first, lang), to: formatTimestamp(last, lang) })}</i>`);
 
-  const buttons: InlineButton[][] = [
-    [{ text: t(lang, "ib.openActivity"), url: `${getSiteUrl()}/activity`, style: "primary" }],
-  ];
-  return { text: lines.join("\n"), buttons };
+  return { text: lines.join("\n") };
 }

@@ -1,5 +1,4 @@
 import { getEventDisplay } from "@/lib/github/event-display";
-import type { ButtonStyle, InlineButton } from "@/lib/telegram/api";
 import { t, translateEventLabel, type Lang } from "@/lib/telegram/i18n";
 
 export function escapeHtml(value: string): string {
@@ -37,7 +36,6 @@ export type TelegramEventInput = {
 
 export type FormattedMessage = {
   text: string;
-  buttons: InlineButton[][];
 };
 
 type Field = [emoji: string, label: string, value: string];
@@ -133,16 +131,7 @@ export function formatTimestamp(date: Date, lang: Lang = "en"): string {
   return `${d.slice(0, 10)} · ${d.slice(11, 16)} UTC`;
 }
 
-/** Colours the primary action button by outcome: red = bad, green = good. */
-function eventButtonStyle(e: TelegramEventInput): ButtonStyle {
-  const action = e.action ?? "";
-  if (["failure", "error", "deleted", "cancelled", "unfollowed"].includes(action)) return "danger";
-  if (["success", "merged", "published", "followed"].includes(action)) return "success";
-  if (e.eventType === "star" || e.eventType === "release") return "success";
-  return "primary";
-}
-
-/** Builds the Telegram message (HTML + inline buttons) for a stored event. */
+/** Builds the Telegram message (HTML) for a stored event. No inline buttons: the title links to GitHub. */
 export function formatEventMessage(e: TelegramEventInput, lang: Lang = "en"): FormattedMessage {
   const baseLabel =
     e.eventType === "star" && e.action === "deleted"
@@ -152,10 +141,14 @@ export function formatEventMessage(e: TelegramEventInput, lang: Lang = "en"): Fo
   const emoji = EVENT_EMOJI[e.eventType] ?? "🔔";
   const { fields, quote } = details(e, lang);
 
-  const lines: string[] = [`${emoji}  <b>${escapeHtml(display.label)}</b>`, DIVIDER];
+  const title = `<b>${escapeHtml(display.label)}</b>`;
+  const lines: string[] = [
+    `${emoji}  ${e.url ? `<a href="${escapeHtml(e.url)}">${title}</a>` : title}`,
+    DIVIDER,
+  ];
 
   if (e.repositoryName && e.eventType !== "follower") {
-    lines.push(`📁 <b>${t(lang, "f.repository")}:</b> ${escapeHtml(e.repositoryName)}`);
+    lines.push(`📁 <b>${t(lang, "f.repository")}:</b> <a href="https://github.com/${e.repositoryName}">${escapeHtml(e.repositoryName)}</a>`);
   }
   if (e.actorLogin) {
     lines.push(
@@ -170,25 +163,5 @@ export function formatEventMessage(e: TelegramEventInput, lang: Lang = "en"): Fo
   }
   lines.push("", `🕒 <i>${formatTimestamp(e.createdAt ?? new Date(), lang)}</i>`);
 
-  const buttons: InlineButton[][] = [];
-  const row: InlineButton[] = [];
-  if (e.url) row.push({ text: t(lang, "ib.viewGithub"), url: e.url, style: eventButtonStyle(e) });
-  if (e.repositoryName && e.eventType !== "follower") {
-    row.push({
-      text: t(lang, "ib.repository"),
-      url: `https://github.com/${e.repositoryName}`,
-      style: "primary",
-    });
-  }
-  if (e.eventType === "follower" && e.actorLogin) {
-    row.length = 0;
-    row.push({
-      text: t(lang, "ib.viewProfile"),
-      url: `https://github.com/${e.actorLogin}`,
-      style: eventButtonStyle(e),
-    });
-  }
-  if (row.length > 0) buttons.push(row);
-
-  return { text: lines.join("\n"), buttons };
+  return { text: lines.join("\n") };
 }
