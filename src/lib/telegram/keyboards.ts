@@ -75,10 +75,6 @@ export function dashboardButtons(lang: Lang): InlineButton[][] {
   ];
 }
 
-export function activityButtons(lang: Lang): InlineButton[][] {
-  return [[{ text: t(lang, "ib.openActivity"), url: `${getSiteUrl()}/activity`, style: "primary" }]];
-}
-
 export function fixConnectionButtons(lang: Lang): InlineButton[][] {
   return [[{ text: t(lang, "ib.fixConnection"), url: `${getSiteUrl()}/settings/github`, style: "danger" }]];
 }
