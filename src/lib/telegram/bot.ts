@@ -12,7 +12,6 @@ import {
   completeGroupLink,
   completeLink,
   removeGroupByChatId,
-  unlinkByChatId,
 } from "@/lib/telegram/connection";
 import { LANGS, matchButton, t, type Lang } from "@/lib/telegram/i18n";
 import {
@@ -207,13 +206,6 @@ async function handleStartWithToken(chatId: string, token: string, lang: Lang, f
   }
 }
 
-async function handleStop(chatId: string, lang: Lang) {
-  const removed = await unlinkByChatId(chatId);
-  await send(chatId, t(lang, removed ? "stop.done" : "stop.none"), {
-    replyMarkup: guestKeyboard(lang),
-  });
-}
-
 /* ------------------------------ groups & channels ---------------------------------- */
 
 async function handleGroupMessage(
@@ -289,24 +281,33 @@ async function handleMessage(update: NonNullable<TelegramUpdate["message"]>) {
     return showStart(chatId, lang, update.from?.first_name);
   }
 
-  if (cmd === "/profile" || button === "btn.profile") return showProfile(chatId, lang);
-  if (cmd === "/connect" || button === "btn.connect") {
-    return void (await send(chatId, msg.connectGithubMessage(lang), {
-      replyMarkup: { inline_keyboard: connectGithubButtons(lang) },
-    }));
-  }
-  if (cmd === "/stats" || button === "btn.stats") return showStats(chatId, lang);
-  if (cmd === "/activity" || button === "btn.activity") return showActivity(chatId, lang);
-  if (cmd === "/repos" || button === "btn.repos") return showRepos(chatId, lang);
-  if (cmd === "/top" || button === "btn.top") return showTop(chatId, lang);
-  if (cmd === "/notifications" || button === "btn.notifications") return showNotifications(chatId, lang);
-  if (cmd === "/language" || button === "btn.language") return showLanguage(chatId, lang);
-  if (cmd === "/help" || button === "btn.help") return showHelp(chatId, lang);
-  if (cmd === "/stop") return handleStop(chatId, lang);
-  if (button === "btn.how") {
-    return void (await send(chatId, msg.howItWorks(lang), {
-      replyMarkup: { inline_keyboard: websiteButtons(lang) },
-    }));
+  // Commands are intentionally not supported (except /start, which Telegram
+  // needs for deep links): everything is reachable from the menu buttons.
+  switch (button) {
+    case "btn.profile":
+      return showProfile(chatId, lang);
+    case "btn.connect":
+      return void (await send(chatId, msg.connectGithubMessage(lang), {
+        replyMarkup: { inline_keyboard: connectGithubButtons(lang) },
+      }));
+    case "btn.stats":
+      return showStats(chatId, lang);
+    case "btn.activity":
+      return showActivity(chatId, lang);
+    case "btn.repos":
+      return showRepos(chatId, lang);
+    case "btn.top":
+      return showTop(chatId, lang);
+    case "btn.notifications":
+      return showNotifications(chatId, lang);
+    case "btn.language":
+      return showLanguage(chatId, lang);
+    case "btn.help":
+      return showHelp(chatId, lang);
+    case "btn.how":
+      return void (await send(chatId, msg.howItWorks(lang), {
+        replyMarkup: { inline_keyboard: websiteButtons(lang) },
+      }));
   }
 
   const member = await getMemberByChatId(chatId);

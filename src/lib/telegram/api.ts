@@ -159,9 +159,9 @@ export async function editTelegramMessage(
   }
 }
 
-/** Registers the "/" command menu shown in the bot's chat UI. */
-export async function setTelegramCommands(commands: { command: string; description: string }[]) {
-  return callApi("setMyCommands", { commands });
+/** Clears the "/" command menu — the bot is driven by its keyboard buttons only. */
+export async function deleteTelegramCommands() {
+  return callApi("deleteMyCommands", {});
 }
 
 /** True if the user is an owner/admin of the chat (used to guard group commands). */

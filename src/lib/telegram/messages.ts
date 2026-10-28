@@ -201,25 +201,7 @@ export function notificationsMessage(lang: Lang, enabled: boolean): string {
 }
 
 export function helpMessage(lang: Lang, connected: boolean): string {
-  return join([
-    t(lang, "help.title"),
-    DIVIDER,
-    t(lang, "help.commands"),
-    t(lang, "help.start"),
-    t(lang, "help.profile"),
-    ...(connected
-      ? [
-          t(lang, "help.stats"),
-          t(lang, "help.activity"),
-          t(lang, "help.repos"),
-          t(lang, "help.top"),
-          t(lang, "help.notifications"),
-        ]
-      : [t(lang, "help.connect")]),
-    t(lang, "help.language"),
-    t(lang, "help.stop"),
-    t(lang, "help.help"),
-  ]);
+  return join([t(lang, "help.title"), DIVIDER, t(lang, connected ? "help.member" : "help.guest")]);
 }
 
 export function languageMessage(lang: Lang): string {
