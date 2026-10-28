@@ -255,18 +255,18 @@ Every event GitHub Monitor records (commits, stars, forks, PRs, issues, releases
 4. In the app, open **Settings → Telegram**, scan the QR code or press **Open in Telegram**, then press **Start** in the bot. 
 
 **Bot features**
-- Guests (not linked) who press `/start` get an introduction plus a bottom menu: **Profile**, **Connect GitHub**, **How it works**, **Help** — with inline buttons that open the website.
+- Guests (not linked) who press `/start` get an introduction plus a bottom menu: **Profile**, **Connect GitHub**, **How it works**, **Language**, **Help** — with inline buttons that open the website.
 - Linked users get **Profile**, **Statistics** (today / 7d / 30d), **Recent activity**, **Repositories**, **Notifications** (pause/resume) and **Help**.
-- Event messages have a structured layout with inline “View on GitHub” buttons.
-- Commands: `/start /profile /stats /activity /repos /notifications /connect /help /stop`. The command menu is registered by the `/api/telegram/setup` call above.
+- Event messages have a structured layout; the title links to the event on GitHub (no inline buttons).
+- **Buttons only:** the bot has no command menu — everything is on the bottom keyboard (only `/start` exists, needed by Telegram deep links). `/api/telegram/setup` also clears any old command menu.
 
 **Advanced features**
 - **Batching:** bursts of events (e.g. a 20-commit push or a wave of stars) are merged into one summary message. The window is `TELEGRAM_BATCH_WINDOW_MS` (default `3000`), which also keeps you under Telegram's per-chat rate limit (flood control is retried automatically).
 - **Milestones:** a one-time congratulation when a repository reaches 10 / 25 / 50 / 100 / 250 / 500 / 1000… stars, or you reach the same number of followers.
 - **Connection health alerts:** GitHub App suspended / removed / restored, repositories removed from the app, or GitHub unreachable (at most once a day).
 - **Groups & channels:** in **Settings → Telegram → Groups & channels** use *Add*. For a group, open the link and pick the group; for a channel, add the bot as admin and post the `/link <token>` command shown. In groups, only admins can `/stop`.
-- **`/top`:** most-starred repositories plus the most active repositories and contributors of the last 7 days.
-- **Languages:** English and فارسی (`/language`). Persian messages use Tehran time and the Jalali calendar.
+- **Top:** most-starred repositories plus the most active repositories and contributors of the last 7 days.
+- **Languages:** English and فارسی (**Language** button). Persian messages use Tehran time and the Jalali calendar.
 
 ## 🔒 Security
 
