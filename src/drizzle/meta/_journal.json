@@ -43,6 +43,13 @@
       "when": 1793051159034,
       "tag": "0005_telegram_groups_prefs_outbox",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793215216695,
+      "tag": "0006_alert_rules",
+      "breakpoints": true
     }
   ]
 }
