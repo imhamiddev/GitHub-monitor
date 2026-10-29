@@ -5,6 +5,7 @@ import {
   FolderGitIcon,
   LayoutDashboardIcon,
   SettingsIcon,
+  UsersIcon,
   ChartColumnIcon,
 } from "lucide-react";
 
@@ -20,5 +21,6 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "Activity", url: "/activity", icon: ActivityIcon },
   { title: "Statistics", url: "/statistics", icon: ChartColumnIcon },
   { title: "Alerts", url: "/alerts", icon: BellRingIcon },
+  { title: "Team", url: "/team", icon: UsersIcon },
   { title: "Settings", url: "/settings", icon: SettingsIcon },
 ];
