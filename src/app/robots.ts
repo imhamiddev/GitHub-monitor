@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         "/repositories",
         "/activity",
         "/statistics",
+        "/alerts",
         "/settings",
         "/onboarding",
         "/api",
