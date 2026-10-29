@@ -15,6 +15,8 @@ The database is **PostgreSQL (Neon)**, accessed through **Drizzle ORM**.
 - **Auth:** `user`, `session`, `account`, `verification`, `rate_limit`
 - **GitHub:** `github_installation`, `repository`, `repository_event_setting`, `github_event`, `follower_snapshot`, `webhook_delivery`
 - **App state:** `user_onboarding`
+- **Alerts:** `alert_rule`
+- **Teams:** `team`, `team_member`, `team_invite`
 - **Telegram:** `telegram_connection`, `telegram_chat_pref`, `telegram_group`, `telegram_milestone`, `telegram_outbox`
 
 ## Commands

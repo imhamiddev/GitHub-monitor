@@ -268,6 +268,16 @@ Every event GitHub Monitor records (commits, stars, forks, PRs, issues, releases
 - **Top:** most-starred repositories plus the most active repositories and contributors of the last 7 days.
 - **Languages:** English and فارسی (**Language** button). Persian messages use Tehran time and the Jalali calendar.
 
+## 🧩 More features
+
+- **Per-repository insights:** open any repository to see 30-day totals, a star-growth chart, weekly commits, top contributors and its own recent events.
+- **Period comparison:** every card on **Statistics** shows the change versus the previous period (today vs. the same time yesterday, 7d/30d vs. the period before).
+- **Alert rules:** **Alerts** lets you define “notify me when N matching events happen within M minutes” (e.g. a workflow failed, 5 issues opened in an hour, a star burst) with presets, per-repository scope and a cooldown. Alerts are delivered to your Telegram chats.
+- **Teams:** **Team** lets you share a **read-only** view of your dashboard through single-use invite links (7-day expiry). Roles: owner, admin (invites/removes viewers) and viewer. Members never get write access.
+- **Automatic cleanup:** a daily cron (`/api/cron/retention`, 03:30 UTC) clears old webhook payloads (3 days) and delivery rows (30 days), the Telegram outbox, expired link tokens and expired sessions. It uses the same `CRON_SECRET` as the follower cron.
+
+After updating, run `npm run db:migrate` — it adds the alert and team tables.
+
 ## 🔒 Security
 
 A full audit against a 19-point checklist (auth, authorization, CSRF, XSS,
