@@ -224,3 +224,9 @@ export async function setMemberRole(teamId: string, memberUserId: string, role: 
     .set({ role })
     .where(and(eq(teamMember.teamId, teamId), eq(teamMember.userId, memberUserId)));
 }
+
+/** Name/e-mail of a user, for "Shared by …" labels. */
+export async function getUserLabel(userId: string): Promise<string> {
+  const [row] = await db.select({ name: user.name, email: user.email }).from(user).where(eq(user.id, userId)).limit(1);
+  return row ? row.name || row.email : "Unknown";
+}
