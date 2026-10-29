@@ -23,7 +23,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+export function LoginForm({
+  className,
+  redirectTo,
+  ...props
+}: React.ComponentProps<"div"> & { redirectTo?: string }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const runWithBar = useLoadingBarAction();
@@ -52,7 +56,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     }
 
     toast.success("Welcome back!");
-    router.push("/dashboard");
+    router.push(redirectTo ?? "/dashboard");
     router.refresh();
   }
 
