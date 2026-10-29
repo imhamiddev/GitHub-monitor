@@ -368,6 +368,66 @@ export const alertRule = pgTable(
 );
 
 /* ------------------------------------------------------------------ */
+/*  Teams — share a read-only view of your dashboard with others.     */
+/*  A team is owned by one user; its data is that owner's GitHub      */
+/*  installation. Members never get write access to it.               */
+/* ------------------------------------------------------------------ */
+
+export const team = pgTable(
+  "team",
+  {
+    id: text("id").primaryKey(),
+    ownerUserId: text("owner_user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("team_owner_user_id_idx").on(t.ownerUserId)]
+);
+
+export const teamMember = pgTable(
+  "team_member",
+  {
+    id: text("id").primaryKey(),
+    teamId: text("team_id")
+      .notNull()
+      .references(() => team.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // "admin" can invite/remove viewers; "viewer" is read-only.
+    role: text("role").notNull().default("viewer"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("team_member_team_user_idx").on(t.teamId, t.userId),
+    index("team_member_user_id_idx").on(t.userId),
+  ]
+);
+
+export const teamInvite = pgTable(
+  "team_invite",
+  {
+    id: text("id").primaryKey(),
+    teamId: text("team_id")
+      .notNull()
+      .references(() => team.id, { onDelete: "cascade" }),
+    // SHA-256 of the invite token carried in the join link.
+    tokenHash: text("token_hash").notNull(),
+    role: text("role").notNull().default("viewer"),
+    createdByUserId: text("created_by_user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at").notNull(),
+    usedAt: timestamp("used_at"),
+    usedByUserId: text("used_by_user_id").references(() => user.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("team_invite_token_hash_idx").on(t.tokenHash), index("team_invite_team_id_idx").on(t.teamId)]
+);
+
+/* ------------------------------------------------------------------ */
 /*  Relations                                                         */
 /* ------------------------------------------------------------------ */
 

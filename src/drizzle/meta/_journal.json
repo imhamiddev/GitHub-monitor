@@ -50,6 +50,13 @@
       "when": 1793215216695,
       "tag": "0006_alert_rules",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793233547650,
+      "tag": "0007_teams",
+      "breakpoints": true
     }
   ]
 }
