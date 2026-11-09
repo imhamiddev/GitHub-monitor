@@ -39,7 +39,7 @@ export async function RepoInsights({ repositoryId }: { repositoryId: string }) {
         <StatCard label="Pull requests" value={totals.pullRequests} />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:[&>:first-child]:col-span-2">
         <StarGrowthChart data={stars} />
         <WeeklyCommitsChart data={weekly} />
       </div>
