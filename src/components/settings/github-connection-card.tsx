@@ -83,7 +83,7 @@ export function GithubConnectionCard({ connection }: { connection: ConnectionSta
           <GitBranch className="size-5" />
           GitHub
         </CardTitle>
-        <CardDescription>Your GitHub App connection.</CardDescription>
+        <CardDescription>Your GitHub App connection</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
