@@ -60,7 +60,7 @@ export function DeleteAccountCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid max-w-sm gap-1.5">
+        <div className="grid max-w-sm gap-2">
           <Label htmlFor="delete-password">Confirm your password</Label>
           <Input
             id="delete-password"
