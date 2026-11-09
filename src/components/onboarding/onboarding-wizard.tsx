@@ -104,8 +104,8 @@ export function OnboardingWizard({
             <CardHeader>
               <CardTitle>Connect your GitHub account</CardTitle>
               <CardDescription>
-                GitHub Monitor connects via a GitHub App — you choose exactly which
-                repositories to grant access to, and can revoke access at any time.
+                GitHub Monitor connects through a GitHub App. You choose which
+                repositories to grant access to and can revoke it at any time.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -172,8 +172,8 @@ export function OnboardingWizard({
             <CardHeader className="items-center text-center">
               <CardTitle>Setup complete</CardTitle>
               <CardDescription>
-                GitHub Monitor is now watching your repositories. Head to your
-                dashboard to see what&apos;s happening.
+                GitHub Monitor is now watching your repositories. Open your
+                dashboard to see their activity.
               </CardDescription>
             </CardHeader>
             <CardContent>
