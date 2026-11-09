@@ -58,7 +58,7 @@ export default async function TeamDashboardPage({ params }: { params: Promise<{ 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{access.team.name}</h1>
+            <h1 className="text-2xl font-medium">{access.team.name}</h1>
             <Badge variant="secondary" className="gap-1">
               <EyeIcon className="size-3" />
               Read-only
