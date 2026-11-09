@@ -36,7 +36,7 @@ export default async function AlertsPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Alerts</h1>
         <p className="text-muted-foreground text-sm">
-          Smart notifications for things that matter — delivered to your connected Telegram chats.
+          Rules that send a Telegram message when something needs your attention
         </p>
       </div>
       <AlertRuleForm repos={repos} />
