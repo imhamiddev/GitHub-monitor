@@ -36,7 +36,7 @@ export function StarGrowthChart({ data }: { data: StarPoint[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Star growth</CardTitle>
-        <CardDescription>Total stars over the last 30 days.</CardDescription>
+        <CardDescription>Total stars over the last 30 days</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-52 w-full">
@@ -86,7 +86,7 @@ export function WeeklyCommitsChart({ data }: { data: WeeklyCommits[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Weekly commits</CardTitle>
-        <CardDescription>Commits per week over the last 12 weeks.</CardDescription>
+        <CardDescription>Commits per week over the last 12 weeks</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-52 w-full">
