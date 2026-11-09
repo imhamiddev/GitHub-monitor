@@ -51,7 +51,7 @@ export async function RepoInsights({ repositoryId }: { repositoryId: string }) {
               <CircleDotIcon className="size-4" />
               Top contributors
             </CardTitle>
-            <CardDescription>Most active people in the last 30 days.</CardDescription>
+            <CardDescription>Most active people in the last 30 days</CardDescription>
           </CardHeader>
           <CardContent>
             {contributors.length === 0 ? (
@@ -86,7 +86,7 @@ export async function RepoInsights({ repositoryId }: { repositoryId: string }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Recent events</CardTitle>
-            <CardDescription>The latest things that happened here.</CardDescription>
+            <CardDescription>The latest things that happened here</CardDescription>
           </CardHeader>
           <CardContent>
             {recent.length === 0 ? (
