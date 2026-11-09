@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import {
-  ActivityIcon,
-  DatabaseIcon,
-  FolderGitIcon,
-  GitBranchIcon,
-} from "lucide-react";
+import { ActivityIcon, GitBranchIcon } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth/session";
 import { getDashboardStats, getRecentActivity } from "@/lib/dashboard/stats";
@@ -66,22 +61,18 @@ export default async function DashboardPage() {
         <StatCard
           label="Repositories"
           value={stats.repositoriesCount}
-          icon={FolderGitIcon}
         />
         <StatCard
           label="Monitored"
           value={stats.monitoredCount}
-          icon={GitBranchIcon}
         />
         <StatCard
           label="Events today"
           value={stats.eventsTodayCount}
-          icon={ActivityIcon}
         />
         <StatCard
           label="Total events"
           value={stats.totalEventsCount}
-          icon={DatabaseIcon}
         />
       </div>
 
