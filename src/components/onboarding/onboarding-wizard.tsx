@@ -147,7 +147,7 @@ export function OnboardingWizard({
                   {repos.map((repo) => (
                     <div
                       key={repo.githubRepoId}
-                      className="flex items-center justify-between px-3 py-2.5"
+                      className="flex items-center justify-between px-3 py-3"
                     >
                       <span className="truncate text-sm">{repo.name}</span>
                       <Switch
