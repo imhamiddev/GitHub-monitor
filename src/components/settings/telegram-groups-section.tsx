@@ -58,7 +58,7 @@ export function TelegramGroupsSection({ groups }: { groups: TelegramGroupItem[] 
     startTransition(async () => {
       const result = await removeTelegramGroup(id);
       if (result.success) {
-        toast.success("Removed.");
+        toast.success("Removed");
         router.refresh();
       } else {
         toast.error(result.error);
@@ -71,7 +71,7 @@ export function TelegramGroupsSection({ groups }: { groups: TelegramGroupItem[] 
       await navigator.clipboard.writeText(text);
       toast.success("Copied");
     } catch {
-      toast.error("Could not copy.");
+      toast.error("Could not copy");
     }
   }
 
