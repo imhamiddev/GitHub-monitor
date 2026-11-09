@@ -84,7 +84,7 @@ export default async function RepositoryDetailPage({
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Tracked Events</CardTitle>
+            <CardTitle className="text-base">Tracked events</CardTitle>
             <CardDescription>
               Choose which kinds of events are tracked and shown in your
               activity feed for this repository.
