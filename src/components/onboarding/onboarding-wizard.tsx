@@ -79,7 +79,7 @@ export function OnboardingWizard({
                   isComplete
                     ? "bg-primary text-primary-foreground"
                     : isActive
-                      ? "border-primary text-primary border
+                      ? "border-primary text-primary border"
                       : "bg-muted text-muted-foreground"
                 }`}
               >
