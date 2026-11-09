@@ -101,7 +101,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-1.5 sm:col-span-2">
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="alert-name">Name</Label>
             <Input
               id="alert-name"
@@ -112,7 +112,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <Label>Repository</Label>
             <Select value={form.repositoryId} onValueChange={(v) => set("repositoryId", v)}>
               <SelectTrigger className="w-full">
@@ -129,7 +129,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
             </Select>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <Label>Event</Label>
             <Select value={form.eventType} onValueChange={(v) => set("eventType", v)}>
               <SelectTrigger className="w-full">
@@ -145,7 +145,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
             </Select>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="alert-action">Action (optional)</Label>
             <Input
               id="alert-action"
@@ -156,7 +156,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="alert-threshold">Count ≥</Label>
               <Input
                 id="alert-threshold"
@@ -166,7 +166,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
                 onChange={(e) => set("threshold", e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="alert-window">Within (min)</Label>
               <Input
                 id="alert-window"
@@ -176,7 +176,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
                 onChange={(e) => set("windowMinutes", e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="alert-cooldown">Cooldown (min)</Label>
               <Input
                 id="alert-cooldown"
