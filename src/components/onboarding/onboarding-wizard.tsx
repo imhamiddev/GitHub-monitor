@@ -79,8 +79,8 @@ export function OnboardingWizard({
                   isComplete
                     ? "bg-primary text-primary-foreground"
                     : isActive
-                      ? "border-primary text-primary border-2"
-                      : "bg-muted-foreground/20 text-muted-foreground"
+                      ? "border-primary text-primary border
+                      : "bg-muted text-muted-foreground"
                 }`}
               >
                 {isComplete ? <CheckIcon className="size-3.5" /> : stepNumber}
