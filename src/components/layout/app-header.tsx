@@ -21,9 +21,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 function humanize(segment: string) {
-  return segment
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  const text = segment.replace(/-/g, " ");
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 export function AppHeader() {
