@@ -42,12 +42,12 @@ export default function DemoDashboardPage() {
           icon={GitBranchIcon}
         />
         <StatCard
-          label="Events Today"
+          label="Events today"
           value={DEMO_STATS.eventsTodayCount}
           icon={ActivityIcon}
         />
         <StatCard
-          label="Total Events"
+          label="Total events"
           value={DEMO_STATS.totalEventsCount}
           icon={DatabaseIcon}
         />
@@ -55,7 +55,7 @@ export default function DemoDashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Recent activity</CardTitle>
           <CardDescription>
             The latest events across your monitored repositories.
           </CardDescription>
