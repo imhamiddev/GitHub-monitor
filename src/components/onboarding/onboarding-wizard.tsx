@@ -15,7 +15,7 @@ import { Logo } from "@/components/layout/logo";
 
 type Step = 1 | 2 | 3;
 
-const STEP_LABELS = ["Connect GitHub", "Choose Repositories", "Done"];
+const STEP_LABELS = ["Connect GitHub", "Choose repositories", "Done"];
 
 export function OnboardingWizard({
   githubConnected,
@@ -173,7 +173,7 @@ export function OnboardingWizard({
               <div className="bg-primary/10 mb-2 flex size-12 items-center justify-center rounded-full">
                 <PartyPopperIcon className="text-primary size-6" />
               </div>
-              <CardTitle>You&apos;re all set!</CardTitle>
+              <CardTitle>Setup complete</CardTitle>
               <CardDescription>
                 GitHub Monitor is now watching your repositories. Head to your
                 dashboard to see what&apos;s happening.
