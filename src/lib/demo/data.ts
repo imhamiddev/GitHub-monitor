@@ -173,3 +173,19 @@ export const DEMO_DAILY_COUNTS: { date: string; count: number }[] = Array.from(
     };
   }
 );
+
+/** Demo activity shaped like real feed items, with timestamps relative to now. */
+export function getDemoActivityItems(limit?: number) {
+  const now = Date.now();
+  return DEMO_ACTIVITY.slice(0, limit).map((item) => ({
+    id: item.id,
+    eventType: item.eventType,
+    action: item.action,
+    actorLogin: item.actorLogin,
+    actorAvatarUrl: null,
+    summary: item.summary,
+    url: null,
+    createdAt: new Date(now - item.minutesAgo * 60_000),
+    repositoryName: item.repositoryName,
+  }));
+}
