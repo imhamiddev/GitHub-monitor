@@ -78,7 +78,7 @@ export function TelegramConnectionCard({
       const status = await getTelegramStatus();
       if (status.connected) {
         setPendingLink(null);
-        toast.success("Telegram connected!");
+        toast.success("Telegram connected");
         router.refresh();
       }
     }, 3000);
