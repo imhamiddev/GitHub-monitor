@@ -19,7 +19,7 @@ export function CreateTeamCard() {
     startTransition(async () => {
       const result = await createTeamAction(name);
       if (result.success) {
-        toast.success("Team created.");
+        toast.success("Team created");
         setName("");
         router.refresh();
       } else {
