@@ -16,7 +16,7 @@ export default function NotFound() {
         <div className="bg-muted flex size-16 items-center justify-center rounded-full">
           <CompassIcon className="text-muted-foreground size-8" />
         </div>
-        <h1 className="text-4xl font-semibold tracking-tight">404</h1>
+        <h1 className="text-4xl font-medium tracking-tight">404</h1>
         <p className="text-muted-foreground max-w-sm text-balance">
           This page doesn&apos;t exist, or it moved somewhere we can&apos;t
           find.
