@@ -32,7 +32,7 @@ export default function DemoStatisticsPage() {
         <StatCard label="Stars" value={stats.stars} icon={StarIcon} />
         <StatCard label="Forks" value={stats.forks} icon={GitForkIcon} />
         <StatCard
-          label="Pull Requests"
+          label="Pull requests"
           value={stats.pullRequests}
           icon={GitPullRequestIcon}
         />
