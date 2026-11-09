@@ -1,4 +1,4 @@
-import { CircleDotIcon, GitBranchIcon, GitForkIcon, GitPullRequestIcon, StarIcon } from "lucide-react";
+import { CircleDotIcon } from "lucide-react";
 
 import {
   getRepoCounters,
@@ -29,14 +29,14 @@ export async function RepoInsights({ repositoryId }: { repositoryId: string }) {
     <section className="flex flex-col gap-4" aria-label="Repository insights">
       <div>
         <h2 className="text-lg font-medium">Insights</h2>
-        <p className="text-muted-foreground text-sm">Last 30 days for this repository.</p>
+        <p className="text-muted-foreground text-sm">Last 30 days for this repository</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Commits" value={totals.commits} icon={GitBranchIcon} />
-        <StatCard label="New stars" value={totals.stars} icon={StarIcon} />
-        <StatCard label="Forks" value={totals.forks} icon={GitForkIcon} />
-        <StatCard label="Pull requests" value={totals.pullRequests} icon={GitPullRequestIcon} />
+        <StatCard label="Commits" value={totals.commits} />
+        <StatCard label="New stars" value={totals.stars} />
+        <StatCard label="Forks" value={totals.forks} />
+        <StatCard label="Pull requests" value={totals.pullRequests} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
