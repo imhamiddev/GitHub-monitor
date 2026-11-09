@@ -32,7 +32,7 @@ export function TelegramGroupsSection({ groups }: { groups: TelegramGroupItem[] 
       }
       if ((await getTelegramGroupCount()) > startCount) {
         setPending(null);
-        toast.success("Group connected!");
+        toast.success("Group connected");
         router.refresh();
       }
     }, 3000);
