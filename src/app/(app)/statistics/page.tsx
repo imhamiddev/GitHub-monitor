@@ -81,7 +81,7 @@ export default async function StatisticsPage({
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Statistics</h1>
+        <h1 className="text-2xl font-medium">Statistics</h1>
         <p className="text-muted-foreground text-sm">
           Event totals across your monitored repositories, compared with the previous period
         </p>
