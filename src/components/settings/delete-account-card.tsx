@@ -41,7 +41,7 @@ export function DeleteAccountCard() {
     startTransition(async () => {
       const result = await runWithBar(() => deleteAccount(password));
       if (result.success) {
-        toast.success("Your account has been deleted.");
+        toast.success("Account deleted");
         router.push("/");
         router.refresh();
       } else {
