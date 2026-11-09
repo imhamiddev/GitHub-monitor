@@ -49,14 +49,14 @@ export function FeatureGrid() {
       initial="hidden"
       whileInView="show"
       viewport={viewportOnce}
-      className="mt-20 grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
     >
       {features.map((feature) => (
         <motion.div key={feature.title} variants={fadeUp}>
-          <Card className="group h-full transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-md">
+          <Card className="h-full">
             <CardHeader>
-              <feature.icon className="text-primary size-6 transition-transform duration-200 ease-out group-hover:scale-110" />
-              <CardTitle className="mt-2 text-base">{feature.title}</CardTitle>
+              <feature.icon className="text-muted-foreground size-5" strokeWidth={1.5} />
+              <CardTitle className="mt-2 text-base font-medium">{feature.title}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-sm">{feature.description}</p>
