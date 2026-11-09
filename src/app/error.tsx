@@ -29,7 +29,7 @@ export default function GlobalErrorBoundary({
         <div className="bg-destructive/10 flex size-16 items-center justify-center rounded-full">
           <AlertTriangleIcon className="text-destructive size-8" />
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-medium">
           Something went wrong
         </h1>
         <p className="text-muted-foreground max-w-sm text-balance">
