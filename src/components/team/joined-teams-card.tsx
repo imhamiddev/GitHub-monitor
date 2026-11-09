@@ -19,7 +19,7 @@ export function JoinedTeamsCard({ memberships }: { memberships: Membership[] }) 
   function leave(teamId: string) {
     startTransition(async () => {
       const result = await leaveTeamAction(teamId);
-      if (result.success) toast.success("You left the team.");
+      if (result.success) toast.success("Left the team");
       else toast.error(result.error);
       router.refresh();
     });
