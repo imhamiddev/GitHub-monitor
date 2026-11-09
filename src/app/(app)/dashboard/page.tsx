@@ -56,7 +56,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground text-sm">
-            An overview of what&apos;s happening across your repositories.
+            An overview of what&apos;s happening across your repositories
           </p>
         </div>
         <LiveIndicator />
