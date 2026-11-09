@@ -65,7 +65,7 @@ export function ChangePasswordCard() {
         <CardHeader>
           <CardTitle className="text-base">Change password</CardTitle>
           <CardDescription>
-            Choose a strong password you don&apos;t use elsewhere.
+            Choose a strong password you don&apos;t use elsewhere
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
