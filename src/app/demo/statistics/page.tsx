@@ -31,7 +31,7 @@ export default function DemoStatisticsPage() {
         <StatCard label="Releases" value={stats.releases} />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:[&>:first-child]:col-span-2">
         <ActivityTrendChart data={DEMO_DAILY_COUNTS} />
         <EventBreakdownChart stats={stats} />
       </div>
