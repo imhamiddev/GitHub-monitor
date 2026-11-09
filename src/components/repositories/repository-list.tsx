@@ -97,7 +97,7 @@ export function RepositoryList({ repos }: { repos: RepoListItem[] }) {
         <div className="relative flex-1">
           <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
-            placeholder="Search repositories..."
+            placeholder="Search repositories"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="pl-9"
