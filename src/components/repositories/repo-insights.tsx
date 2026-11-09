@@ -28,7 +28,7 @@ export async function RepoInsights({ repositoryId }: { repositoryId: string }) {
   return (
     <section className="flex flex-col gap-4" aria-label="Repository insights">
       <div>
-        <h2 className="text-lg font-semibold tracking-tight">Insights</h2>
+        <h2 className="text-lg font-medium">Insights</h2>
         <p className="text-muted-foreground text-sm">Last 30 days for this repository.</p>
       </div>
 
