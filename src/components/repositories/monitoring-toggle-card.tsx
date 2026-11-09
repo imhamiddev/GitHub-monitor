@@ -37,7 +37,7 @@ export function MonitoringToggleCard({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-1.5 text-base">
+        <CardTitle className="flex items-center gap-2 text-base">
           Monitoring
           {isPending && (
             <Loader2Icon className="text-muted-foreground size-3.5 animate-spin" />
