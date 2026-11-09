@@ -29,7 +29,7 @@ export function JoinedTeamsCard({ memberships }: { memberships: Membership[] }) 
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Teams you&apos;ve joined</CardTitle>
-        <CardDescription>Dashboards other people have shared with you.</CardDescription>
+        <CardDescription>Dashboards other people have shared with you</CardDescription>
       </CardHeader>
       <CardContent className="divide-y">
         {memberships.map((m) => (
