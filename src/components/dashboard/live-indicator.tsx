@@ -75,7 +75,7 @@ export function LiveIndicator() {
   }
 
   return (
-    <Badge variant="outline" className="text-muted-foreground gap-1.5">
+    <Badge variant="outline" className="text-muted-foreground gap-2">
       <span className="relative flex size-2">
         <span
           className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
