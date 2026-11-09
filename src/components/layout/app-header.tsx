@@ -76,7 +76,7 @@ export function AppHeader() {
         onClick={openCommandPalette}
       >
         <SearchIcon className="size-3.5" />
-        Search...
+        Search
         <kbd className="bg-muted pointer-events-none ml-2 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none md:inline-flex">
           <span className="text-xs">⌘</span>K
         </kbd>
