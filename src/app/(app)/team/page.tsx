@@ -23,7 +23,7 @@ export default async function TeamPage() {
   return (
     <div className="flex max-w-3xl flex-1 flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Team</h1>
+        <h1 className="text-2xl font-medium">Team</h1>
         <p className="text-muted-foreground text-sm">Share a read-only view of your dashboard, or open ones shared with you.</p>
       </div>
 
