@@ -32,7 +32,7 @@ export function StatCard({
           {label}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xl leading-tight font-semibold tabular-nums">{value}</span>
+          <span className="text-xl leading-tight font-medium tabular-nums">{value}</span>
           {delta && <DeltaBadge delta={delta} />}
         </div>
       </div>
