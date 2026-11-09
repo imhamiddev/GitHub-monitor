@@ -81,7 +81,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
       <CardHeader>
         <CardTitle className="text-base">New alert rule</CardTitle>
         <CardDescription>
-          Get a Telegram message when matching events happen often enough within a time window.
+          Get a Telegram message when matching events happen often enough within a time window
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
