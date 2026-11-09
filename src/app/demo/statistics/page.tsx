@@ -23,7 +23,7 @@ export default function DemoStatisticsPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Statistics</h1>
         <p className="text-muted-foreground text-sm">
-          Event totals across your monitored repositories.
+          Event totals across your monitored repositories
         </p>
       </div>
 
