@@ -77,7 +77,7 @@ export default async function ActivityPage({
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Activity</h1>
+        <h1 className="text-2xl font-medium">Activity</h1>
         <p className="text-muted-foreground text-sm">
           The complete history of events across your monitored repositories
         </p>
