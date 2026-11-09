@@ -67,7 +67,7 @@ export function AlertRuleForm({ repos }: { repos: RepoOption[] }) {
         cooldownMinutes: Number(form.cooldownMinutes),
       });
       if (result.success) {
-        toast.success("Alert rule created.");
+        toast.success("Alert rule created");
         setForm(INITIAL);
         router.refresh();
       } else {
