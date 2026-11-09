@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckIcon, ExternalLinkIcon, GitBranch, PartyPopperIcon } from "lucide-react";
+import { CheckIcon, ExternalLinkIcon, GitBranch } from "lucide-react";
 import { toast } from "sonner";
 
 import { completeOnboarding } from "@/lib/onboarding/actions";
@@ -170,9 +170,6 @@ export function OnboardingWizard({
         {step === 3 && (
           <Card>
             <CardHeader className="items-center text-center">
-              <div className="bg-primary/10 mb-2 flex size-12 items-center justify-center rounded-full">
-                <PartyPopperIcon className="text-primary size-6" />
-              </div>
               <CardTitle>Setup complete</CardTitle>
               <CardDescription>
                 GitHub Monitor is now watching your repositories. Head to your
