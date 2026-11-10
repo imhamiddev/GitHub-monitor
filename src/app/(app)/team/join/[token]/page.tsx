@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
-  title: "Join a team — GitHub Monitor",
+  title: "Join a team | GitHub Monitor",
   robots: { index: false },
 };
 

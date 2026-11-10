@@ -8,7 +8,7 @@ import { hasCompletedOnboarding } from "@/lib/onboarding/actions";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
 export const metadata: Metadata = {
-  title: "Get started — GitHub Monitor",
+  title: "Get started | GitHub Monitor",
 };
 
 export default async function OnboardingPage() {

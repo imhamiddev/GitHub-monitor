@@ -5,7 +5,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { ActivityTrendChart } from "@/components/statistics/activity-trend-chart";
 import { EventBreakdownChart } from "@/components/statistics/event-breakdown-chart";
 
-export const metadata: Metadata = { title: "Statistics — Demo" };
+export const metadata: Metadata = { title: "Statistics | Demo" };
 
 export default function DemoStatisticsPage() {
   const stats = DEMO_STATISTICS_COUNTS;

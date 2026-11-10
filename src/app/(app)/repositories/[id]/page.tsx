@@ -23,7 +23,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/repositories/[id]">): Promise<Metadata> {
   const { id } = await params;
-  return { title: `Repository — GitHub Monitor (${id})` };
+  return { title: `Repository | GitHub Monitor (${id})` };
 }
 
 export default async function RepositoryDetailPage({

@@ -8,7 +8,7 @@ import { RepositoryList } from "@/components/repositories/repository-list";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
-  title: "Repositories — GitHub Monitor",
+  title: "Repositories | GitHub Monitor",
 };
 
 export default async function RepositoriesPage() {

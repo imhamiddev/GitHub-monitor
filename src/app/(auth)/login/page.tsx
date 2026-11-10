@@ -4,7 +4,7 @@ import { safeRedirectPath } from "@/lib/auth/safe-redirect";
 import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
-  title: "Sign in — GitHub Monitor",
+  title: "Sign in | GitHub Monitor",
 };
 
 export default async function LoginPage({

@@ -16,7 +16,7 @@ function ChartTooltip({
   const point = payload[0].payload;
 
   return (
-    <div className="bg-popover text-popover-foreground rounded-md border px-3 py-2 text-sm shadow-md">
+    <div className="bg-popover text-popover-foreground rounded-md border px-3 py-2 text-sm shadow-sm">
       <div className="font-medium">{point.label}</div>
       <div className="text-muted-foreground">
         {point.value} event{point.value === 1 ? "" : "s"}

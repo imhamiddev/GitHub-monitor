@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangleIcon, CheckCircle2Icon } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "GitHub connection — Settings",
+  title: "GitHub connection | Settings",
 };
 
 const STATUS_MESSAGES: Record<string, { variant: "success" | "destructive"; title: string; description: string }> = {

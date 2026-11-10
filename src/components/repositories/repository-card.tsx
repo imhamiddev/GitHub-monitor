@@ -56,8 +56,8 @@ export function RepositoryCard({
         // h-full + flex column: every card in a grid row stretches to the
         // same height, and the footer (toggle + buttons) is pinned to the
         // bottom so controls line up across cards regardless of content.
-        "h-full gap-4 py-4 transition-[border-color,box-shadow] duration-200 ease-out hover:border-foreground/20 hover:shadow-md",
-        animateIn && "animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards duration-300 ease-out"
+        "h-full gap-4 py-4 transition-colors duration-150 hover:border-foreground/20",
+        animateIn && "animate-in fade-in duration-200"
       )}
     >
       <CardHeader className="gap-1 px-5">

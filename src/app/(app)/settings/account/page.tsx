@@ -6,7 +6,7 @@ import { ChangePasswordCard } from "@/components/settings/change-password-card";
 import { DeleteAccountCard } from "@/components/settings/delete-account-card";
 
 export const metadata: Metadata = {
-  title: "Account — Settings",
+  title: "Account | Settings",
 };
 
 export default async function AccountSettingsPage() {

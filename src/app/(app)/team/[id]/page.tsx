@@ -24,7 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
-  title: "Team dashboard — GitHub Monitor",
+  title: "Team dashboard | GitHub Monitor",
 };
 
 /**
