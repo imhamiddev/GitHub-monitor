@@ -8,7 +8,7 @@ import { JoinedTeamsCard } from "@/components/team/joined-teams-card";
 import { TeamManager } from "@/components/team/team-manager";
 
 export const metadata: Metadata = {
-  title: "Team — GitHub Monitor",
+  title: "Team | GitHub Monitor",
 };
 
 export default async function TeamPage() {
