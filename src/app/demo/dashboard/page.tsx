@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { DEMO_ACTIVITY, DEMO_STATS } from "@/lib/demo/data";
+import { DEMO_STATS, getDemoActivityItems } from "@/lib/demo/data";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ActivityFeedItem } from "@/components/dashboard/activity-feed-item";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,17 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const metadata: Metadata = { title: "Dashboard — Demo" };
 
 export default function DemoDashboardPage() {
-  const activityItems = DEMO_ACTIVITY.map((item) => ({
-    id: item.id,
-    eventType: item.eventType,
-    action: item.action,
-    actorLogin: item.actorLogin,
-    actorAvatarUrl: null,
-    summary: item.summary,
-    url: null,
-    createdAt: new Date(Date.now() - item.minutesAgo * 60_000),
-    repositoryName: item.repositoryName,
-  }));
+  const activityItems = getDemoActivityItems();
 
   return (
     <div className="flex flex-1 flex-col gap-6">

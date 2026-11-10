@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
 
-import { DEMO_ACTIVITY } from "@/lib/demo/data";
+import { getDemoActivityItems } from "@/lib/demo/data";
 import { groupByDay } from "@/lib/activity/group-by-day";
 import { ActivityFeedItem } from "@/components/dashboard/activity-feed-item";
 
 export const metadata: Metadata = { title: "Activity — Demo" };
 
 export default function DemoActivityPage() {
-  const items = DEMO_ACTIVITY.map((item) => ({
-    id: item.id,
-    eventType: item.eventType,
-    action: item.action,
-    actorLogin: item.actorLogin,
-    actorAvatarUrl: null,
-    summary: item.summary,
-    url: null,
-    createdAt: new Date(Date.now() - item.minutesAgo * 60_000),
-    repositoryName: item.repositoryName,
-  }));
+  const items = getDemoActivityItems();
 
   const groups = groupByDay(items);
 
