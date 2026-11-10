@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/pagination";
 
 export const metadata: Metadata = {
-  title: "Activity — GitHub Monitor",
+  title: "Activity | GitHub Monitor",
 };
 
 function resolveDateRange(range: string | undefined): Date | undefined {
