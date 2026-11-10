@@ -43,7 +43,7 @@ export function GithubConnectionCard({ connection }: { connection: ConnectionSta
     startTransition(async () => {
       const result = await runWithBar(() => disconnectGithub());
       if (result.success) {
-        toast.success("GitHub account disconnected.");
+        toast.success("GitHub account disconnected");
         setDialogOpen(false);
         router.refresh();
       } else {

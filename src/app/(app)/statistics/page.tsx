@@ -99,7 +99,7 @@ export default async function StatisticsPage({
         <StatCard label="Releases" value={stats.releases} delta={deltas.releases} />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:[&>:first-child]:col-span-2">
         <ActivityTrendChart data={dailyCounts} />
         <EventBreakdownChart stats={stats} />
       </div>

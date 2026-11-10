@@ -26,14 +26,12 @@ export default function GlobalErrorBoundary({
       </Link>
 
       <div className="flex flex-col items-center gap-3">
-        <div className="bg-destructive/10 flex size-16 items-center justify-center rounded-full">
-          <AlertTriangleIcon className="text-destructive size-8" />
-        </div>
+        <AlertTriangleIcon className="text-muted-foreground size-6" strokeWidth={1.5} />
         <h1 className="text-2xl font-medium">
           Something went wrong
         </h1>
         <p className="text-muted-foreground max-w-sm text-balance">
-          An unexpected error occurred. You can try again, or head back home.
+          An unexpected error occurred. Try again, or go back home.
         </p>
         {error.digest && (
           <p className="text-muted-foreground font-mono text-xs">

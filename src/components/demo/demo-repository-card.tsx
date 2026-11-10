@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
 function notifyDemo() {
-  toast.info("This is a demo — sign up to manage real repositories.");
+  toast.info("This is a demo. Sign up to manage real repositories");
 }
 
 export function DemoRepositoryCard({ repo }: { repo: DemoRepo }) {

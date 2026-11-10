@@ -27,7 +27,7 @@ export function AlertRuleList({ rules }: { rules: AlertRuleListItem[] }) {
   function run(task: () => Promise<{ success: boolean; error?: string }>, okMessage?: string) {
     startTransition(async () => {
       const result = await task();
-      if (!result.success) toast.error(result.error ?? "Something went wrong.");
+      if (!result.success) toast.error(result.error ?? "Something went wrong");
       else if (okMessage) toast.success(okMessage);
       router.refresh();
     });

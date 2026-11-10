@@ -51,7 +51,7 @@ export function LoginForm({
     setIsSubmitting(false);
 
     if (error) {
-      toast.error(error.message ?? "Invalid email or password.");
+      toast.error(error.message ?? "Invalid email or password");
       return;
     }
 
@@ -64,8 +64,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your GitHub Monitor account</CardDescription>
+          <CardTitle className="text-xl font-medium">Sign in</CardTitle>
+          <CardDescription>Use your GitHub Monitor account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>

@@ -58,7 +58,7 @@ export function TeamManager({ teamId, teamName, viewerId, viewerRole, members, i
   function run(task: () => Promise<{ success: boolean; error?: string }>, ok?: string, after?: () => void) {
     startTransition(async () => {
       const result = await task();
-      if (!result.success) toast.error(result.error ?? "Something went wrong.");
+      if (!result.success) toast.error(result.error ?? "Something went wrong");
       else {
         if (ok) toast.success(ok);
         after?.();
@@ -72,7 +72,7 @@ export function TeamManager({ teamId, teamName, viewerId, viewerRole, members, i
       await navigator.clipboard.writeText(text);
       toast.success("Link copied");
     } catch {
-      toast.error("Could not copy the link.");
+      toast.error("Could not copy the link");
     }
   }
 
@@ -81,7 +81,7 @@ export function TeamManager({ teamId, teamName, viewerId, viewerRole, members, i
       const result = await createInviteAction(teamId, inviteRole);
       if (result.success) {
         setFreshLink(result.link);
-        toast.success("Invite link created.");
+        toast.success("Invite link created");
       } else {
         toast.error(result.error);
       }

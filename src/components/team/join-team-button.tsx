@@ -16,7 +16,7 @@ export function JoinTeamButton({ token }: { token: string }) {
     startTransition(async () => {
       const result = await acceptInviteAction(token);
       if (result.success) {
-        toast.success("You joined the team.");
+        toast.success("Joined the team");
         router.push(`/team/${result.teamId}`);
         router.refresh();
       } else {

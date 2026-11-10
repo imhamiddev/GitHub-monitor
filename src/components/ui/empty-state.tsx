@@ -17,8 +17,8 @@ export function EmptyState({
   actionHref?: string;
 }) {
   return (
-    <div className="animate-in fade-in zoom-in-95 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-16 text-center duration-300 ease-out">
-      <Icon className="text-muted-foreground size-8" />
+    <div className="animate-in fade-in flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-16 text-center duration-300 ease-out">
+      <Icon className="text-muted-foreground size-6" strokeWidth={1.5} />
       <div className="space-y-1">
         <h3 className="text-sm font-medium">{title}</h3>
         <p className="text-muted-foreground max-w-sm text-sm">{description}</p>

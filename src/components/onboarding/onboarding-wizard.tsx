@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckIcon, ExternalLinkIcon, GitBranch, PartyPopperIcon } from "lucide-react";
+import { CheckIcon, ExternalLinkIcon, GitBranch } from "lucide-react";
 import { toast } from "sonner";
 
 import { completeOnboarding } from "@/lib/onboarding/actions";
@@ -79,8 +79,8 @@ export function OnboardingWizard({
                   isComplete
                     ? "bg-primary text-primary-foreground"
                     : isActive
-                      ? "border-primary text-primary border-2"
-                      : "bg-muted-foreground/20 text-muted-foreground"
+                      ? "border-primary text-primary border"
+                      : "bg-muted text-muted-foreground"
                 }`}
               >
                 {isComplete ? <CheckIcon className="size-3.5" /> : stepNumber}
@@ -104,8 +104,8 @@ export function OnboardingWizard({
             <CardHeader>
               <CardTitle>Connect your GitHub account</CardTitle>
               <CardDescription>
-                GitHub Monitor connects via a GitHub App — you choose exactly which
-                repositories to grant access to, and can revoke access at any time.
+                GitHub Monitor connects through a GitHub App. You choose which
+                repositories to grant access to and can revoke it at any time.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -170,13 +170,10 @@ export function OnboardingWizard({
         {step === 3 && (
           <Card>
             <CardHeader className="items-center text-center">
-              <div className="bg-primary/10 mb-2 flex size-12 items-center justify-center rounded-full">
-                <PartyPopperIcon className="text-primary size-6" />
-              </div>
               <CardTitle>Setup complete</CardTitle>
               <CardDescription>
-                GitHub Monitor is now watching your repositories. Head to your
-                dashboard to see what&apos;s happening.
+                GitHub Monitor is now watching your repositories. Open your
+                dashboard to see their activity.
               </CardDescription>
             </CardHeader>
             <CardContent>

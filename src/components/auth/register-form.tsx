@@ -48,7 +48,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
     setIsSubmitting(false);
 
     if (error) {
-      toast.error(error.message ?? "Could not create your account.");
+      toast.error(error.message ?? "Could not create your account");
       return;
     }
 
@@ -61,9 +61,9 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create an account</CardTitle>
+          <CardTitle className="text-xl font-medium">Create an account</CardTitle>
           <CardDescription>
-            Start monitoring your GitHub repositories in minutes
+            Monitor your GitHub repositories
           </CardDescription>
         </CardHeader>
         <CardContent>

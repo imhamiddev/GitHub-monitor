@@ -105,7 +105,7 @@ export function TelegramConnectionCard({
     startTransition(async () => {
       const result = await runWithBar(() => disconnectTelegram());
       if (result.success) {
-        toast.success("Telegram disconnected.");
+        toast.success("Telegram disconnected");
         setDialogOpen(false);
         setPendingLink(null);
         router.refresh();
@@ -130,7 +130,7 @@ export function TelegramConnectionCard({
   function handleTest() {
     startTransition(async () => {
       const result = await runWithBar(() => sendTelegramTestMessage());
-      if (result.success) toast.success("Test message sent — check Telegram.");
+      if (result.success) toast.success("Test message sent");
       else toast.error(result.error);
     });
   }
@@ -140,7 +140,7 @@ export function TelegramConnectionCard({
       await navigator.clipboard.writeText(link);
       toast.success("Link copied");
     } catch {
-      toast.error("Could not copy the link.");
+      toast.error("Could not copy the link");
     }
   }
 
