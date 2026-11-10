@@ -113,7 +113,7 @@ export default async function TeamDashboardPage({ params }: { params: Promise<{ 
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Monitored repositories</CardTitle>
-            <CardDescription>Most starred first.</CardDescription>
+            <CardDescription>Most starred first</CardDescription>
           </CardHeader>
           <CardContent>
             {repos.length === 0 ? (
@@ -141,7 +141,7 @@ export default async function TeamDashboardPage({ params }: { params: Promise<{ 
       <Card>
         <CardHeader>
           <CardTitle>Recent activity</CardTitle>
-          <CardDescription>The latest events across the shared repositories.</CardDescription>
+          <CardDescription>The latest events across the shared repositories</CardDescription>
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (

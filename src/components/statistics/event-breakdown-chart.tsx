@@ -39,7 +39,7 @@ export function EventBreakdownChart({ stats }: { stats: StatisticsCounts }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Event breakdown</CardTitle>
-        <CardDescription>Distribution across event types for the selected range.</CardDescription>
+        <CardDescription>Distribution across event types for the selected range</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-64 w-full">

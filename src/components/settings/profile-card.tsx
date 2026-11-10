@@ -6,7 +6,7 @@ export function ProfileCard({ name, email }: { name: string; email: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Profile</CardTitle>
-        <CardDescription>Your account details.</CardDescription>
+        <CardDescription>Your account details</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-1.5">

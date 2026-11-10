@@ -94,7 +94,7 @@ export function TeamManager({ teamId, teamName, viewerId, viewerRole, members, i
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{teamName}</CardTitle>
-          <CardDescription>Everyone here sees your dashboard, statistics and activity — read-only.</CardDescription>
+          <CardDescription>Everyone here sees your dashboard, statistics and activity — read-only</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-2">
           <Button asChild>
@@ -247,7 +247,7 @@ export function TeamManager({ teamId, teamName, viewerId, viewerRole, members, i
         <Card className="border-destructive/40">
           <CardHeader>
             <CardTitle className="text-base">Danger zone</CardTitle>
-            <CardDescription>Deleting the team removes every member&apos;s access immediately.</CardDescription>
+            <CardDescription>Deleting the team removes every member&apos;s access immediately</CardDescription>
           </CardHeader>
           <CardContent>
             <AlertDialog>

@@ -21,9 +21,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 function humanize(segment: string) {
-  return segment
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  const text = segment.replace(/-/g, " ");
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 export function AppHeader() {
@@ -76,8 +75,8 @@ export function AppHeader() {
         onClick={openCommandPalette}
       >
         <SearchIcon className="size-3.5" />
-        Search...
-        <kbd className="bg-muted pointer-events-none ml-2 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none md:inline-flex">
+        Search
+        <kbd className="bg-muted pointer-events-none ml-2 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[11px] font-medium select-none md:inline-flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>

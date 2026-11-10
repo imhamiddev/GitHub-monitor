@@ -80,7 +80,7 @@ export default async function DashboardPage() {
         <CardHeader>
           <CardTitle>Recent activity</CardTitle>
           <CardDescription>
-            The latest events across your monitored repositories.
+            The latest events across your monitored repositories
           </CardDescription>
         </CardHeader>
         <CardContent>
