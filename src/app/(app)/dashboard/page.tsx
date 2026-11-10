@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Dashboard — GitHub Monitor",
+  title: "Dashboard | GitHub Monitor",
 };
 
 export default async function DashboardPage() {
