@@ -75,7 +75,7 @@ export function RepositoryCard({
         <p
           className={cn(
             "line-clamp-2 min-h-10 text-sm leading-5",
-            repo.description ? "text-muted-foreground" : "text-muted-foreground/50 italic"
+            repo.description ? "text-muted-foreground" : "text-muted-foreground/50"
           )}
         >
           {repo.description || "No description"}

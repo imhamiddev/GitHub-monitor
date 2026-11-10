@@ -51,7 +51,7 @@ export default async function RepositoryDetailPage({
         </Button>
         <div className="flex items-center justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-medium">
               {repo.name}
             </h1>
             {repo.description && (

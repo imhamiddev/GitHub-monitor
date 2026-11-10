@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ActivityIcon, DatabaseIcon, FolderGitIcon, GitBranchIcon } from "lucide-react";
 
 import { DEMO_ACTIVITY, DEMO_STATS } from "@/lib/demo/data";
 import { StatCard } from "@/components/dashboard/stat-card";
@@ -24,7 +23,7 @@ export default function DemoDashboardPage() {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-medium">Dashboard</h1>
         <p className="text-muted-foreground text-sm">
           An overview of what&apos;s happening across your repositories
         </p>
@@ -34,22 +33,18 @@ export default function DemoDashboardPage() {
         <StatCard
           label="Repositories"
           value={DEMO_STATS.repositoriesCount}
-          icon={FolderGitIcon}
         />
         <StatCard
           label="Monitored"
           value={DEMO_STATS.monitoredCount}
-          icon={GitBranchIcon}
         />
         <StatCard
           label="Events today"
           value={DEMO_STATS.eventsTodayCount}
-          icon={ActivityIcon}
         />
         <StatCard
           label="Total events"
           value={DEMO_STATS.totalEventsCount}
-          icon={DatabaseIcon}
         />
       </div>
 

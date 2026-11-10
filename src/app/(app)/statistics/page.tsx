@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  GitBranchIcon,
-  GitForkIcon,
-  GitPullRequestIcon,
-  CircleDotIcon,
-  RocketIcon,
-  StarIcon,
-} from "lucide-react";
+import { StarIcon } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth/session";
 import { getInstallationForUser } from "@/lib/github/installations";
@@ -81,7 +74,7 @@ export default async function StatisticsPage({
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Statistics</h1>
+        <h1 className="text-2xl font-medium">Statistics</h1>
         <p className="text-muted-foreground text-sm">
           Event totals across your monitored repositories, compared with the previous period
         </p>
@@ -94,17 +87,16 @@ export default async function StatisticsPage({
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <StatCard label="Commits" value={stats.commits} delta={deltas.commits} icon={GitBranchIcon} />
-        <StatCard label="Stars" value={stats.stars} delta={deltas.stars} icon={StarIcon} />
-        <StatCard label="Forks" value={stats.forks} delta={deltas.forks} icon={GitForkIcon} />
+        <StatCard label="Commits" value={stats.commits} delta={deltas.commits} />
+        <StatCard label="Stars" value={stats.stars} delta={deltas.stars} />
+        <StatCard label="Forks" value={stats.forks} delta={deltas.forks} />
         <StatCard
           label="Pull requests"
           value={stats.pullRequests}
           delta={deltas.pullRequests}
-          icon={GitPullRequestIcon}
         />
-        <StatCard label="Issues" value={stats.issues} delta={deltas.issues} icon={CircleDotIcon} />
-        <StatCard label="Releases" value={stats.releases} delta={deltas.releases} icon={RocketIcon} />
+        <StatCard label="Issues" value={stats.issues} delta={deltas.issues} />
+        <StatCard label="Releases" value={stats.releases} delta={deltas.releases} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">

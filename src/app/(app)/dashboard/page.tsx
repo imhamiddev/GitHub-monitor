@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import {
-  ActivityIcon,
-  DatabaseIcon,
-  FolderGitIcon,
-  GitBranchIcon,
-} from "lucide-react";
+import { ActivityIcon, GitBranchIcon } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth/session";
 import { getDashboardStats, getRecentActivity } from "@/lib/dashboard/stats";
@@ -54,7 +49,7 @@ export default async function DashboardPage() {
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <h1 className="text-2xl font-medium">Dashboard</h1>
           <p className="text-muted-foreground text-sm">
             An overview of what&apos;s happening across your repositories
           </p>
@@ -66,22 +61,18 @@ export default async function DashboardPage() {
         <StatCard
           label="Repositories"
           value={stats.repositoriesCount}
-          icon={FolderGitIcon}
         />
         <StatCard
           label="Monitored"
           value={stats.monitoredCount}
-          icon={GitBranchIcon}
         />
         <StatCard
           label="Events today"
           value={stats.eventsTodayCount}
-          icon={ActivityIcon}
         />
         <StatCard
           label="Total events"
           value={stats.totalEventsCount}
-          icon={DatabaseIcon}
         />
       </div>
 

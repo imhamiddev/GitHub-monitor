@@ -33,7 +33,7 @@ export default async function ManageTeamPage({ params }: { params: Promise<{ id:
             Back to team
           </Link>
         </Button>
-        <h1 className="text-2xl font-semibold tracking-tight">Manage {access.team.name}</h1>
+        <h1 className="text-2xl font-medium">Manage {access.team.name}</h1>
       </div>
       <TeamManager
         teamId={access.team.id}

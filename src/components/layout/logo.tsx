@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
         className
       )}
     >
-      <GitBranch className="size-[60%]" strokeWidth={2.5} />
+      <GitBranch className="size-[60%]" strokeWidth={1.5} />
     </div>
   );
 }
