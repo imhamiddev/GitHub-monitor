@@ -6,7 +6,7 @@ import { getBotUsername, isTelegramConfigured } from "@/lib/telegram/api";
 import { TelegramConnectionCard } from "@/components/settings/telegram-connection-card";
 
 export const metadata: Metadata = {
-  title: "Telegram — Settings",
+  title: "Telegram | Settings",
 };
 
 export default async function TelegramSettingsPage() {
