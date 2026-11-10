@@ -4,7 +4,7 @@ import { getDemoActivityItems } from "@/lib/demo/data";
 import { groupByDay } from "@/lib/activity/group-by-day";
 import { ActivityFeedItem } from "@/components/dashboard/activity-feed-item";
 
-export const metadata: Metadata = { title: "Activity — Demo" };
+export const metadata: Metadata = { title: "Activity | Demo" };
 
 export default function DemoActivityPage() {
   const items = getDemoActivityItems();
