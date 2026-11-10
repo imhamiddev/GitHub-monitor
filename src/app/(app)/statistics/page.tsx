@@ -14,7 +14,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
-  title: "Statistics — GitHub Monitor",
+  title: "Statistics | GitHub Monitor",
 };
 
 function startOfTodayUtc(): Date {
