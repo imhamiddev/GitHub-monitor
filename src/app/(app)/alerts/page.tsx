@@ -9,7 +9,7 @@ import { AlertRuleList } from "@/components/alerts/alert-rule-list";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = {
-  title: "Alerts — GitHub Monitor",
+  title: "Alerts | GitHub Monitor",
 };
 
 export default async function AlertsPage() {
