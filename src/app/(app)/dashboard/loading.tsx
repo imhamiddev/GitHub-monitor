@@ -17,7 +17,7 @@ export default function DashboardLoading() {
       </div>
 
       <Card>
-        <CardHeader className="gap-1.5">
+        <CardHeader className="gap-2">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-64 max-w-full" />
         </CardHeader>

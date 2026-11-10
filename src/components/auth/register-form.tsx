@@ -69,7 +69,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="grid gap-6">
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
@@ -82,7 +82,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   <p className="text-destructive text-sm">{errors.name.message}</p>
                 )}
               </div>
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -96,7 +96,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   <p className="text-destructive text-sm">{errors.email.message}</p>
                 )}
               </div>
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
@@ -114,7 +114,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   At least 10 characters.
                 </p>
               </div>
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="confirmPassword">Confirm password</Label>
                 <Input
                   id="confirmPassword"

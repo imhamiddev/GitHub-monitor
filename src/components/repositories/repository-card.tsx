@@ -94,7 +94,7 @@ export function RepositoryCard({
         </div>
 
         <div className="flex h-6 items-center justify-between">
-          <span className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium transition-colors duration-150">
+          <span className="text-muted-foreground flex items-center gap-2 text-sm font-medium transition-colors duration-150">
             {isPending ? (
               <Loader2Icon className="size-3.5 animate-spin" />
             ) : null}

@@ -35,8 +35,8 @@ export function EventSettingRow({
   }
 
   return (
-    <div className="hover:bg-accent/50 -mx-2 flex items-center justify-between rounded-md px-2 py-2.5 transition-colors duration-150">
-      <span className="flex items-center gap-1.5 text-sm">
+    <div className="hover:bg-accent/50 -mx-2 flex items-center justify-between rounded-md px-2 py-3 transition-colors duration-150">
+      <span className="flex items-center gap-2 text-sm">
         {label}
         {isPending && (
           <Loader2Icon className="text-muted-foreground size-3.5 animate-spin" />

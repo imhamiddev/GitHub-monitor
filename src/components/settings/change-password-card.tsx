@@ -69,7 +69,7 @@ export function ChangePasswordCard() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="grid gap-1.5">
+          <div className="grid gap-2">
             <Label htmlFor="currentPassword">Current password</Label>
             <Input
               id="currentPassword"
@@ -84,7 +84,7 @@ export function ChangePasswordCard() {
               </p>
             )}
           </div>
-          <div className="grid gap-1.5">
+          <div className="grid gap-2">
             <Label htmlFor="newPassword">New password</Label>
             <Input
               id="newPassword"
@@ -97,7 +97,7 @@ export function ChangePasswordCard() {
               <p className="text-destructive text-sm">{errors.newPassword.message}</p>
             )}
           </div>
-          <div className="grid gap-1.5">
+          <div className="grid gap-2">
             <Label htmlFor="confirmPassword">Confirm new password</Label>
             <Input
               id="confirmPassword"

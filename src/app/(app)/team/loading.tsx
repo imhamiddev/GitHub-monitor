@@ -9,7 +9,7 @@ export default function TeamLoading() {
         <Skeleton className="h-4 w-80 max-w-full" />
       </div>
       <Card>
-        <CardHeader className="gap-1.5">
+        <CardHeader className="gap-2">
           <Skeleton className="h-5 w-40" />
           <Skeleton className="h-4 w-72 max-w-full" />
         </CardHeader>
