@@ -5,7 +5,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { ActivityFeedItem } from "@/components/dashboard/activity-feed-item";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata: Metadata = { title: "Dashboard — Demo" };
+export const metadata: Metadata = { title: "Dashboard | Demo" };
 
 export default function DemoDashboardPage() {
   const activityItems = getDemoActivityItems();
