@@ -55,7 +55,7 @@ export function LoginForm({
       return;
     }
 
-    toast.success("Welcome back!");
+    toast.success("Signed in");
     router.push(redirectTo ?? "/dashboard");
     router.refresh();
   }

@@ -28,7 +28,7 @@ const EVENT_TYPE_OPTIONS = [
   { value: "push", label: EVENT_CATEGORY_LABELS.push },
   { value: "star", label: EVENT_CATEGORY_LABELS.star },
   { value: "fork", label: EVENT_CATEGORY_LABELS.fork },
-  { value: "pull_request", label: "Pull Requests" },
+  { value: "pull_request", label: "Pull requests" },
   { value: "issues", label: "Issues" },
   { value: "issue_comment", label: EVENT_CATEGORY_LABELS.issue_comment },
   { value: "release", label: EVENT_CATEGORY_LABELS.release },
@@ -84,7 +84,7 @@ export function ActivityFilters({ repositories }: { repositories: RepoOption[] }
         onValueChange={(value) => setParam("type", value)}
       >
         <SelectTrigger className="w-full sm:w-48">
-          <SelectValue placeholder="Event Type" />
+          <SelectValue placeholder="Event type" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All event types</SelectItem>
@@ -115,7 +115,7 @@ export function ActivityFilters({ repositories }: { repositories: RepoOption[] }
       <div className="relative flex-1 sm:min-w-48">
         <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
-          placeholder="Search..."
+          placeholder="Search"
           defaultValue={searchParams.get("q") ?? ""}
           onChange={(event) => debouncedSetSearch(event.target.value)}
           className="pl-9"

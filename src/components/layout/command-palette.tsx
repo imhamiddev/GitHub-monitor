@@ -74,10 +74,10 @@ export function CommandPalette({ repos }: { repos: CommandPaletteRepo[] }) {
     <CommandDialog
       open={open}
       onOpenChange={setOpen}
-      title="Command Palette"
+      title="Command palette"
       description="Jump to a page or repository"
     >
-      <CommandInput placeholder="Search pages and repositories..." />
+      <CommandInput placeholder="Search pages and repositories" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 

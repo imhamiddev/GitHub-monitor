@@ -23,7 +23,7 @@ export default function DemoStatisticsPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Statistics</h1>
         <p className="text-muted-foreground text-sm">
-          Event totals across your monitored repositories.
+          Event totals across your monitored repositories
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export default function DemoStatisticsPage() {
         <StatCard label="Stars" value={stats.stars} icon={StarIcon} />
         <StatCard label="Forks" value={stats.forks} icon={GitForkIcon} />
         <StatCard
-          label="Pull Requests"
+          label="Pull requests"
           value={stats.pullRequests}
           icon={GitPullRequestIcon}
         />

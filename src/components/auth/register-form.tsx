@@ -52,7 +52,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
       return;
     }
 
-    toast.success("Account created — welcome!");
+    toast.success("Account created");
     router.push("/onboarding");
     router.refresh();
   }

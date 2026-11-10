@@ -40,7 +40,7 @@ export default async function RepositoriesPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Repositories</h1>
         <p className="text-muted-foreground text-sm">
           Choose which repositories to monitor and manage their tracked
-          event settings.
+          event settings
         </p>
       </div>
 

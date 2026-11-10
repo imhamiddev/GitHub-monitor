@@ -79,7 +79,7 @@ export default async function ActivityPage({
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Activity</h1>
         <p className="text-muted-foreground text-sm">
-          The complete history of events across your monitored repositories.
+          The complete history of events across your monitored repositories
         </p>
       </div>
 

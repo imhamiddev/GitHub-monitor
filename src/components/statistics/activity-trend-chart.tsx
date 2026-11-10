@@ -42,7 +42,7 @@ export function ActivityTrendChart({ data }: { data: DailyEventCount[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Activity Trend</CardTitle>
+        <CardTitle className="text-base">Activity trend</CardTitle>
         <CardDescription>Events per day over the last 30 days.</CardDescription>
       </CardHeader>
       <CardContent>

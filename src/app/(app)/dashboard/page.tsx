@@ -56,7 +56,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground text-sm">
-            An overview of what&apos;s happening across your repositories.
+            An overview of what&apos;s happening across your repositories
           </p>
         </div>
         <LiveIndicator />
@@ -74,12 +74,12 @@ export default async function DashboardPage() {
           icon={GitBranchIcon}
         />
         <StatCard
-          label="Events Today"
+          label="Events today"
           value={stats.eventsTodayCount}
           icon={ActivityIcon}
         />
         <StatCard
-          label="Total Events"
+          label="Total events"
           value={stats.totalEventsCount}
           icon={DatabaseIcon}
         />
@@ -87,7 +87,7 @@ export default async function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Recent activity</CardTitle>
           <CardDescription>
             The latest events across your monitored repositories.
           </CardDescription>

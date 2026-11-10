@@ -83,7 +83,7 @@ export default async function StatisticsPage({
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Statistics</h1>
         <p className="text-muted-foreground text-sm">
-          Event totals across your monitored repositories, compared with the previous period.
+          Event totals across your monitored repositories, compared with the previous period
         </p>
       </div>
 
@@ -98,7 +98,7 @@ export default async function StatisticsPage({
         <StatCard label="Stars" value={stats.stars} delta={deltas.stars} icon={StarIcon} />
         <StatCard label="Forks" value={stats.forks} delta={deltas.forks} icon={GitForkIcon} />
         <StatCard
-          label="Pull Requests"
+          label="Pull requests"
           value={stats.pullRequests}
           delta={deltas.pullRequests}
           icon={GitPullRequestIcon}

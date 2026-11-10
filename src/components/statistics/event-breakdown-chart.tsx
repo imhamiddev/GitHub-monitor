@@ -30,7 +30,7 @@ export function EventBreakdownChart({ stats }: { stats: StatisticsCounts }) {
     { label: "Commits", value: stats.commits },
     { label: "Stars", value: stats.stars },
     { label: "Forks", value: stats.forks },
-    { label: "Pull Requests", value: stats.pullRequests },
+    { label: "Pull requests", value: stats.pullRequests },
     { label: "Issues", value: stats.issues },
     { label: "Releases", value: stats.releases },
   ];
@@ -38,7 +38,7 @@ export function EventBreakdownChart({ stats }: { stats: StatisticsCounts }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Event Breakdown</CardTitle>
+        <CardTitle className="text-base">Event breakdown</CardTitle>
         <CardDescription>Distribution across event types for the selected range.</CardDescription>
       </CardHeader>
       <CardContent>

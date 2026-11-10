@@ -105,8 +105,8 @@ export default async function TeamDashboardPage({ params }: { params: Promise<{ 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="Repositories" value={stats.repositoriesCount} icon={FolderGitIcon} />
         <StatCard label="Monitored" value={stats.monitoredCount} icon={GitBranchIcon} />
-        <StatCard label="Events Today" value={stats.eventsTodayCount} icon={ActivityIcon} />
-        <StatCard label="Total Events" value={stats.totalEventsCount} icon={DatabaseIcon} />
+        <StatCard label="Events today" value={stats.eventsTodayCount} icon={ActivityIcon} />
+        <StatCard label="Total events" value={stats.totalEventsCount} icon={DatabaseIcon} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
@@ -142,7 +142,7 @@ export default async function TeamDashboardPage({ params }: { params: Promise<{ 
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Recent activity</CardTitle>
           <CardDescription>The latest events across the shared repositories.</CardDescription>
         </CardHeader>
         <CardContent>
