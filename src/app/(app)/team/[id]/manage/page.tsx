@@ -10,7 +10,7 @@ import { TeamManager } from "@/components/team/team-manager";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Manage team — GitHub Monitor",
+  title: "Manage team | GitHub Monitor",
 };
 
 /** Owners and admins manage members here; viewers get a 404. */
