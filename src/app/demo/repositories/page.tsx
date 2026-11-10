@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { DEMO_REPOS } from "@/lib/demo/data";
 import { DemoRepositoryCard } from "@/components/demo/demo-repository-card";
 
-export const metadata: Metadata = { title: "Repositories — Demo" };
+export const metadata: Metadata = { title: "Repositories | Demo" };
 
 export default function DemoRepositoriesPage() {
   return (
